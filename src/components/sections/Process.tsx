@@ -157,24 +157,30 @@ export function Process() {
             axis="x"
             progress={progress}
           />
-          {/* Telefono: los pasos son tarjetas que se deslizan de lado, con la siguiente asomandose. */}
-          <ol className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 [scrollbar-width:none] lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible lg:px-0 lg:pb-0">
+          {/* Telefono: el caminito del rio a la izquierda, con el capibara nadando. */}
+          <River
+            className="absolute bottom-4 left-0 top-1 w-10 text-paper lg:hidden"
+            d="M20 0 C40 120 0 200 20 330 S40 540 20 660 S0 880 20 1000"
+            width={40}
+            height={1000}
+            axis="y"
+            progress={progress}
+          />
+
+          <ol className="grid grid-cols-1 gap-7 pl-14 lg:mt-8 lg:grid-cols-4 lg:gap-8 lg:pl-0">
             {processSteps.map((s, i) => {
               const on = reduce || i < reached;
               return (
-                <li
-                  key={s.title}
-                  className="relative w-[78%] shrink-0 snap-start rounded-[26px] bg-river-2 p-5 shadow-[0_20px_40px_-24px_rgb(0_0_0/0.6)] lg:w-auto lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none"
-                >
+                <li key={s.title} className="relative">
                   <motion.span
                     animate={{ scale: on ? 1 : 0.6, backgroundColor: on ? "#d9772b" : "rgba(239,233,221,0.18)" }}
                     transition={{ type: "spring", stiffness: 400, damping: 24 }}
                     aria-hidden
-                    className="mb-3 block h-3 w-3 rounded-full lg:mb-4"
+                    className="mb-2 block h-3 w-3 rounded-full lg:mb-4"
                   />
-                  <p className="text-[0.95rem] font-semibold text-paper/60">Paso {i + 1}</p>
+                  <p className="text-[0.9rem] font-semibold text-paper/60 sm:text-[0.95rem]">Paso {i + 1}</p>
                   <h3 className="mt-1 font-display text-[1.5rem] font-medium sm:text-[1.7rem] tracking-[-0.02em] text-paper">{s.title}</h3>
-                  <p className="mt-2 max-w-[18rem] text-[0.97rem] leading-[1.55] text-paper/70 sm:text-[1rem]">{s.body}</p>
+                  <p className="mt-1 max-w-[18rem] text-[0.97rem] leading-[1.5] text-paper/70 sm:mt-2 sm:text-[1rem] sm:leading-[1.55]">{s.body}</p>
                 </li>
               );
             })}

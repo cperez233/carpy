@@ -51,7 +51,7 @@ export function TeamCard({ member, layout = "column", variants }: TeamCardProps)
         initial={{ opacity: 0, rotate: 0, y: 30 }}
         animate={seen ? { opacity: 1, rotate: -4, y: 0 } : undefined}
         transition={{ duration: 1, ease }}
-        className="absolute inset-0 rounded-[32px] bg-water/70"
+        className="absolute inset-0 hidden rounded-[32px] bg-water/70 sm:block"
       />
       <motion.div
         ref={ref}
