@@ -1,0 +1,267 @@
+@import "tailwindcss";
+
+/*
+ * carpy: un capibara tranquilo en el rio. Papel de arcilla clara, tinta de
+ * agua honda, y un solo acento: la mandarina que el capibara lleva en la
+ * cabeza. El pelo y el agua aparecen solo en las ilustraciones.
+ */
+@theme {
+  --color-paper: #efe9dd;
+  --color-paper-2: #f7f3eb;
+  --color-paper-3: #e5ddcd;
+  --color-ink: #1d2521;
+  --color-ink-2: #3c4640;
+  --color-ink-3: #6a716b;
+  --color-river: #26322d;
+  --color-river-2: #31403a;
+  --color-water: #a9bdb1;
+  --color-reed: #5f7a4b;
+  --color-fur: #9b6b47;
+  --color-fur-2: #7c5236;
+  --color-mandarina: #d9772b;
+  --color-mandarina-ink: #a2521b;
+  --color-fail: #b2452f;
+  --color-ok: #3f6f57;
+
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Tres alturas, sombras calidas y amplias. */
+  --shadow-rest: 0 1px 2px rgb(60 40 20 / 0.06), 0 10px 24px -14px rgb(60 40 20 / 0.18);
+  --shadow-raised: 0 2px 4px rgb(60 40 20 / 0.05), 0 28px 50px -24px rgb(60 40 20 / 0.32);
+  --shadow-float: 0 2px 6px rgb(40 30 20 / 0.08), 0 36px 70px -26px rgb(40 30 20 / 0.42);
+  --shadow-sheet: 0 -30px 60px -40px rgb(40 30 20 / 0.35);
+
+  --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  interpolate-size: allow-keywords;
+  color-scheme: light;
+}
+
+html {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  overflow-x: clip;
+  background-color: var(--color-paper);
+}
+
+/* Grano de papel, casi invisible. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.font-display {
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+}
+
+::selection {
+  background: rgb(217 119 43 / 0.28);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-mandarina);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- Bucles (todas las clases empiezan por anim-) ---------- */
+
+/* Ondas que se abren alrededor del capibara. */
+@keyframes anim-ripple {
+  0% { transform: scale(0.55); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+.anim-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: anim-ripple 6s var(--ease-calm) infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Respiracion: el lomo sube y baja un par de pixeles. */
+@keyframes anim-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2.5px); }
+}
+.anim-breathe {
+  animation: anim-breathe 5.2s ease-in-out infinite;
+}
+
+/* El ojo se abre un momento y vuelve a cerrarse. */
+@keyframes anim-peek {
+  0%, 78%, 100% { transform: scaleY(0.12); }
+  82%, 92% { transform: scaleY(1); }
+}
+.anim-peek {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: anim-peek 9s ease-in-out infinite;
+}
+
+/* Oreja que se mueve de vez en cuando. */
+@keyframes anim-ear {
+  0%, 60%, 70%, 100% { transform: rotate(0); }
+  64% { transform: rotate(-14deg); }
+  67% { transform: rotate(4deg); }
+}
+.anim-ear {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: anim-ear 7s ease-in-out infinite;
+}
+
+/* Juncos mecidos por el viento. */
+@keyframes anim-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(3deg); }
+}
+.anim-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: anim-sway var(--dur, 6s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Linea de agua que se desliza. */
+@keyframes anim-current {
+  to { transform: translateX(-120px); }
+}
+.anim-current {
+  animation: anim-current var(--dur, 9s) linear infinite;
+}
+
+/* Problemas que bajan por el rio. Cruzan a ~30 px/s. */
+@keyframes anim-drift {
+  from { transform: translateX(var(--from, 110%)); }
+  to { transform: translateX(var(--to, -120%)); }
+}
+.anim-drift {
+  animation: anim-drift var(--dur, 22s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes anim-bob {
+  0%, 100% { transform: translateY(0) rotate(-1.2deg); }
+  50% { transform: translateY(-5px) rotate(1.2deg); }
+}
+.anim-bob {
+  animation: anim-bob 3.4s ease-in-out infinite;
+  animation-delay: var(--bob, 0s);
+}
+/* A mitad del camino (al pasar junto al capibara) el problema queda resuelto. */
+@keyframes anim-before {
+  0%, 44% { opacity: 1; transform: translateY(0); }
+  50%, 100% { opacity: 0; transform: translateY(-60%); }
+}
+@keyframes anim-after {
+  0%, 46% { opacity: 0; transform: translateY(60%); }
+  52%, 100% { opacity: 1; transform: translateY(0); }
+}
+.anim-before {
+  animation: anim-before var(--dur, 22s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+.anim-after {
+  animation: anim-after var(--dur, 22s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Nombres que pasan como corriente. */
+@keyframes anim-marquee {
+  to { transform: translateX(-33.3333%); }
+}
+.anim-marquee {
+  animation: anim-marquee var(--dur, 60s) linear infinite;
+}
+
+.is-paused,
+.is-paused * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="anim-"] {
+    animation: none !important;
+  }
+  /* Sin movimiento, las etiquetas muestran su estado resuelto. */
+  .anim-before { opacity: 0; }
+  .anim-after { opacity: 1; }
+  .drift-lane:nth-child(n + 3) { display: none; }
+  .drift-lane:nth-child(1) { transform: translateX(-20%); }
+  .drift-lane:nth-child(2) { transform: translateX(18%); }
+}
+
+/* ---------- Detalles de la escena ---------- */
+@keyframes anim-flap {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.35); }
+}
+.anim-flap {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: anim-flap 0.16s linear infinite;
+}
+@keyframes anim-hover {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.anim-hover {
+  animation: anim-hover 1.2s ease-in-out infinite;
+}
+@keyframes anim-birds {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-160px); }
+}
+.anim-birds {
+  animation: anim-birds 40s linear infinite alternate;
+}
+@keyframes anim-firefly {
+  0% { transform: translate(0, 0); opacity: 0; }
+  20% { opacity: 0.7; }
+  50% { transform: translate(28px, -36px); opacity: 0.25; }
+  75% { opacity: 0.6; }
+  100% { transform: translate(-10px, -70px); opacity: 0; }
+}
+.anim-firefly {
+  box-shadow: 0 0 10px 2px rgb(243 217 166 / 0.35);
+  animation: anim-firefly var(--dur, 12s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Marca viva (footer): la oreja se mueve y la mandarina se mece. */
+.carpy-alive .carpy-ear {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: anim-ear 6s ease-in-out infinite;
+}
+.carpy-alive .carpy-fruit {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: anim-sway 4s ease-in-out infinite;
+}
+
+/* Orilla del rio que se desliza sin costura. */
+@keyframes anim-wave {
+  to { transform: translateX(-50%); }
+}
+.anim-wave {
+  animation: anim-wave var(--dur, 20s) linear infinite;
+}
