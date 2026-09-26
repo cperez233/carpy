@@ -126,28 +126,28 @@ export function Process() {
     <section
       id="proceso"
       aria-labelledby="proceso-title"
-      className="relative z-20 -mt-10 rounded-t-[40px] bg-river pb-28 pt-24 text-paper shadow-sheet sm:rounded-t-[56px] lg:pb-36 lg:pt-32"
+      className="relative z-20 -mt-10 rounded-t-[40px] bg-river pb-20 pt-16 text-paper sm:pb-28 sm:pt-24 shadow-sheet sm:rounded-t-[56px] lg:pb-36 lg:pt-32"
     >
       <Fireflies className="rounded-t-[40px] sm:rounded-t-[56px]" />
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
         <SectionLabel onDark>Para quién</SectionLabel>
-        <div className="mt-6">
+        <div className="mt-5 sm:mt-6">
           <Statement />
         </div>
 
-        <div className="mt-28 grid grid-cols-1 gap-6 lg:mt-36 lg:grid-cols-12 lg:items-end">
+        <div className="mt-16 grid grid-cols-1 gap-4 sm:mt-28 sm:gap-6 lg:mt-36 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
             <SectionLabel onDark>Cómo trabajamos</SectionLabel>
             <h2 id="proceso-title" className="mt-5 font-display text-[clamp(2.3rem,5vw,4rem)] font-medium leading-[1] tracking-[-0.03em]">
               <SplitWords text="Sin sorpresas en el camino." />
             </h2>
           </div>
-          <p className="max-w-[28rem] text-[1.06rem] leading-[1.65] text-paper/70 lg:col-span-5">
+          <p className="max-w-[28rem] text-[1rem] leading-[1.6] text-paper/70 sm:text-[1.06rem] lg:col-span-5">
             Sabes qué recibes, cuándo y cuánto cuesta antes de empezar.
           </p>
         </div>
 
-        <div ref={ref} className="relative mt-16">
+        <div ref={ref} className="relative mt-8 sm:mt-16">
           {/* Escritorio: rio horizontal con los pasos debajo. */}
           <River
             className="hidden h-[120px] text-paper lg:block"
@@ -157,38 +157,32 @@ export function Process() {
             axis="x"
             progress={progress}
           />
-          {/* Telefono: rio vertical a la izquierda. */}
-          <River
-            className="absolute bottom-6 left-0 top-2 w-10 text-paper lg:hidden"
-            d="M20 0 C40 120 0 200 20 330 S40 540 20 660 S0 880 20 1000"
-            width={40}
-            height={1000}
-            axis="y"
-            progress={progress}
-          />
-
-          <ol className="grid grid-cols-1 gap-10 pl-16 lg:mt-8 lg:grid-cols-4 lg:gap-8 lg:pl-0">
+          {/* Telefono: los pasos son tarjetas que se deslizan de lado, con la siguiente asomandose. */}
+          <ol className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 [scrollbar-width:none] lg:mx-0 lg:mt-8 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible lg:px-0 lg:pb-0">
             {processSteps.map((s, i) => {
               const on = reduce || i < reached;
               return (
-                <li key={s.title} className="relative">
+                <li
+                  key={s.title}
+                  className="relative w-[78%] shrink-0 snap-start rounded-[26px] bg-river-2 p-5 shadow-[0_20px_40px_-24px_rgb(0_0_0/0.6)] lg:w-auto lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none"
+                >
                   <motion.span
                     animate={{ scale: on ? 1 : 0.6, backgroundColor: on ? "#d9772b" : "rgba(239,233,221,0.18)" }}
                     transition={{ type: "spring", stiffness: 400, damping: 24 }}
                     aria-hidden
-                    className="mb-4 block h-3 w-3 rounded-full"
+                    className="mb-3 block h-3 w-3 rounded-full lg:mb-4"
                   />
                   <p className="text-[0.95rem] font-semibold text-paper/60">Paso {i + 1}</p>
-                  <h3 className="mt-1 font-display text-[1.7rem] font-medium tracking-[-0.02em] text-paper">{s.title}</h3>
-                  <p className="mt-2 max-w-[18rem] text-[1rem] leading-[1.6] text-paper/70">{s.body}</p>
+                  <h3 className="mt-1 font-display text-[1.5rem] font-medium sm:text-[1.7rem] tracking-[-0.02em] text-paper">{s.title}</h3>
+                  <p className="mt-2 max-w-[18rem] text-[0.97rem] leading-[1.55] text-paper/70 sm:text-[1rem]">{s.body}</p>
                 </li>
               );
             })}
           </ol>
         </div>
 
-        <div className="mt-24 grid grid-cols-1 gap-8 border-t border-paper/15 pt-10 lg:grid-cols-12">
-          <h3 className="font-display text-[1.7rem] font-medium tracking-[-0.02em] lg:col-span-4">Va por escrito</h3>
+        <div className="mt-12 grid grid-cols-1 gap-3 border-t border-paper/15 pt-8 sm:mt-24 sm:gap-8 sm:pt-10 lg:grid-cols-12">
+          <h3 className="font-display text-[1.5rem] font-medium tracking-[-0.02em] sm:text-[1.7rem] lg:col-span-4">Va por escrito</h3>
           <motion.ul
             variants={staggerParent}
             initial="hidden"
@@ -197,7 +191,7 @@ export function Process() {
             className="grid grid-cols-1 gap-x-10 sm:grid-cols-2 lg:col-span-8"
           >
             {promises.map((p) => (
-              <motion.li key={p} variants={staggerChild} className="flex gap-3 border-b border-paper/10 py-4 text-[1.03rem] leading-[1.55] text-paper/85">
+              <motion.li key={p} variants={staggerChild} className="flex gap-3 border-b border-paper/10 py-3 text-[0.98rem] leading-[1.5] text-paper/85 sm:py-4 sm:text-[1.03rem]">
                 <motion.span
                   aria-hidden
                   initial={{ scaleX: 0 }}

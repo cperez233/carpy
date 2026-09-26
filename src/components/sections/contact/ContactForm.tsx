@@ -161,7 +161,7 @@ export function ContactForm() {
                 </div>
               </fieldset>
 
-              <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-7 sm:grid-cols-2 sm:gap-5">
                 <Field id={`${uid}-name`} label="Nombre" error={err("name")}>
                   <input
                     id={`${uid}-name`}
@@ -203,7 +203,7 @@ export function ContactForm() {
                   <textarea
                     id={`${uid}-message`}
                     name="message"
-                    rows={4}
+                    rows={3}
                     value={f.message}
                     onChange={(e) => set("message")(e.target.value)}
                     onBlur={blur("message")}
@@ -255,7 +255,7 @@ export function ContactForm() {
       </form>
 
       {/* Asi llega el mensaje. */}
-      <div className="lg:col-span-5">
+      <div className="hidden lg:col-span-5 lg:block">
         <div className="rounded-[32px] bg-river p-5 shadow-float sm:p-7 lg:sticky lg:top-28">
           <div className="flex items-center gap-3 border-b border-paper/10 pb-4">
             <span className="grid h-10 w-10 place-items-center rounded-full bg-paper">

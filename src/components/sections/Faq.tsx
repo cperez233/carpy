@@ -59,8 +59,8 @@ export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   const wa = whatsappHref("Hola, tengo una pregunta para carpy.");
   return (
-    <section id="preguntas" aria-labelledby="preguntas-title" className="relative bg-paper py-20 lg:py-28">
-      <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
+    <section id="preguntas" aria-labelledby="preguntas-title" className="relative bg-paper pb-20 pt-10 sm:py-20 lg:py-28">
+      <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-6 px-4 sm:gap-12 sm:px-6 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
             <SectionLabel>Preguntas</SectionLabel>

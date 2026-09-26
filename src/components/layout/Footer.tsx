@@ -17,8 +17,8 @@ export function Footer() {
 
   return (
     <footer ref={ref} className="relative -mt-14 overflow-hidden bg-river pt-14 text-paper">
-      <div className="mx-auto max-w-[1240px] px-4 pt-20 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
+      <div className="mx-auto max-w-[1240px] px-4 pt-12 sm:px-6 sm:pt-20 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-5">
             <span className="text-paper">
               <Logo cutout="var(--color-river)" />
@@ -39,7 +39,7 @@ export function Footer() {
           </div>
           <nav aria-label="Secciones" className="md:col-span-3">
             <h2 className="text-[0.95rem] font-semibold text-paper">Secciones</h2>
-            <ul className="mt-3">
+            <ul className="mt-3 grid grid-cols-2 gap-x-4 md:block">
               {navItems.map((n) => (
                 <li key={n.id}>
                   <a href={`#${n.id}`} onClick={(e) => handleAnchorClick(e, n.id)} className={linkCls}>
@@ -54,7 +54,7 @@ export function Footer() {
               </li>
             </ul>
           </nav>
-          <div className="md:col-span-4">
+          <div className="hidden md:col-span-4 md:block">
             <h2 className="text-[0.95rem] font-semibold text-paper">Servicios</h2>
             <ul className="mt-3">
               {services.map((s) => (
@@ -67,7 +67,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-14 flex flex-wrap items-center justify-between gap-3 border-t border-paper/10 py-6 text-[0.9rem] text-paper/50">
+        <div className="mt-8 flex flex-wrap sm:mt-14 items-center justify-between gap-3 border-t border-paper/10 py-6 text-[0.9rem] text-paper/50">
           <p>
             © 2026 {site.name}.
           </p>

@@ -58,7 +58,7 @@ export function TeamCard({ member, layout = "column", variants }: TeamCardProps)
         initial={{ clipPath: "inset(35% 0% 0% 0% round 32px)", opacity: 0, y: 60 }}
         animate={seen ? { clipPath: "inset(0% 0% 0% 0% round 32px)", opacity: 1, y: 0 } : undefined}
         transition={{ duration: 1.1, delay: 0.15, ease }}
-        className="group/photo relative aspect-[4/5] overflow-hidden rounded-[32px] bg-paper-3 shadow-float"
+        className="group/photo relative aspect-[5/5] overflow-hidden rounded-[32px] bg-paper-3 shadow-float sm:aspect-[4/5]"
       >
         {member.photo ? (
           <motion.img
@@ -114,10 +114,10 @@ export function TeamCard({ member, layout = "column", variants }: TeamCardProps)
         <p className="mt-2 text-[1.02rem] font-medium text-ink-3">
           {member.role}
         </p>
-        <p className="mt-6 max-w-[34rem] text-[1.08rem] leading-[1.65] text-ink-2">{member.bio}</p>
+        <p className="mt-4 max-w-[34rem] text-[1.02rem] leading-[1.6] text-ink-2 sm:mt-6 sm:text-[1.08rem] sm:leading-[1.65]">{member.bio}</p>
 
         {member.focus.length > 0 && (
-          <ul className="mt-7 max-w-[34rem]">
+          <ul className="mt-7 hidden max-w-[34rem] sm:block">
             {member.focus.map((f, i) => (
               <motion.li
                 key={f}
@@ -134,7 +134,7 @@ export function TeamCard({ member, layout = "column", variants }: TeamCardProps)
         )}
         {member.stack.length > 0 && <p className="mt-4 text-[0.95rem] text-ink-3">Trabaja con {member.stack.join(", ")}.</p>}
 
-        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 sm:mt-8">
           {member.portfolio && (
             <motion.a
               href={member.portfolio.href}

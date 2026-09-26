@@ -20,12 +20,12 @@ export function Hero() {
   const sceneRotate = useTransform(scrollYProgress, [0, 1], [0, -2]);
 
   return (
-    <section ref={ref} id="inicio" aria-labelledby="hero-title" className="relative pb-24 pt-28 sm:pt-36 lg:pb-32 lg:pt-40">
+    <section ref={ref} id="inicio" aria-labelledby="hero-title" className="relative pb-20 pt-24 sm:pb-24 sm:pt-36 lg:pb-32 lg:pt-40">
       <motion.div
         style={reduce ? undefined : { scale: sink, opacity: dim }}
         className="mx-auto max-w-[1240px] origin-top px-4 sm:px-6 lg:px-8"
       >
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center lg:gap-10">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-10">
           <div className="lg:col-span-6">
             <h1
               id="hero-title"
@@ -42,7 +42,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.55, ease }}
-              className="mt-8 max-w-[30rem] text-[1.2rem] font-medium leading-[1.5] text-ink-2 sm:text-[1.3rem]"
+              className="mt-6 max-w-[30rem] text-[1.15rem] font-medium sm:mt-8 leading-[1.5] text-ink-2 sm:text-[1.3rem]"
             >
               Resolvemos lo que tu empresa necesite en software, sin afán y de buena manera, como el capibara.
             </motion.p>
@@ -50,7 +50,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.68, ease }}
-              className="mt-5 max-w-[30rem] text-[1.03rem] leading-[1.7] text-ink-3"
+              className="mt-5 hidden max-w-[30rem] text-[1.03rem] leading-[1.7] text-ink-3 sm:block"
             >
               Sistemas a medida, páginas y tiendas, integraciones con lo que ya usas, tableros de datos, auditorías y
               soporte. Para que los problemas se resuelvan con calma y no un viernes en la noche.
@@ -60,7 +60,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.8, ease }}
-              className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3"
+              className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 sm:mt-9"
             >
               <Magnetic>
                 <ButtonLink href={bookingHref} external={bookingIsExternal} onClick={(e) => onBookingClick(e, "hero")}>

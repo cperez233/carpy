@@ -17,7 +17,7 @@ export function Team() {
     <section
       id="equipo"
       aria-labelledby="equipo-title"
-      className="relative z-30 -mt-10 rounded-t-[40px] bg-paper py-24 shadow-sheet sm:rounded-t-[56px] lg:py-32"
+      className="relative z-30 -mt-10 rounded-t-[40px] bg-paper pb-16 pt-14 shadow-sheet sm:rounded-t-[56px] sm:py-24 lg:py-32"
     >
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end">
@@ -27,7 +27,7 @@ export function Team() {
               <SplitWords text="Hablas con quien escribe el código." />
             </h2>
           </div>
-          <motion.p {...reveal} className="max-w-[30rem] text-[1.06rem] leading-[1.65] text-ink-3 lg:col-span-5">
+          <motion.p {...reveal} className="max-w-[30rem] text-[1rem] leading-[1.6] text-ink-3 sm:text-[1.06rem] lg:col-span-5">
             carpy la formamos tres socios que desarrollan y auditan software. Sin intermediarios ni
             cuentas que pasan de mano en mano.
           </motion.p>
@@ -38,7 +38,7 @@ export function Team() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
-          className={cn("mt-16 grid grid-cols-1 gap-10", n === 2 ? "md:grid-cols-2" : n >= 3 ? "md:grid-cols-2 lg:grid-cols-3" : "")}
+          className={cn("mt-10 grid grid-cols-1 gap-10 sm:mt-16", n === 2 ? "md:grid-cols-2" : n >= 3 ? "md:grid-cols-2 lg:grid-cols-3" : "")}
         >
           {activeTeam.map((m) => (
             <TeamCard key={m.id} member={m} layout={n === 1 ? "wide" : "column"} variants={staggerChild} />

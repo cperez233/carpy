@@ -4,14 +4,14 @@ import { useLoopInView } from "../../lib/useLoopInView";
 import { CarpyMark } from "../brand/CarpyMark";
 
 const words = [
-  "Inventarios",
+  "Software",
   "Páginas web",
-  "Facturación electrónica",
-  "Reservas",
-  "Tiendas en línea",
-  "Pedidos por WhatsApp",
-  "Tableros de ventas",
   "Auditorías",
+  "Integraciones",
+  "Apps",
+  "Datos",
+  "Seguridad",
+  "Automatización",
   "Soporte",
 ];
 
@@ -70,7 +70,7 @@ function Floaty({ kind, bob }: { kind: "fruit" | "pad" | "capy"; bob: number }) 
 
 /**
  * Un rio que cruza la pagina: la orilla ondula, la superficie corre y lo que
- * construimos flota con la corriente (~35 px/s). Se pausa al pasar el puntero,
+ * construimos flota con la corriente (~55 px/s). Se pausa al pasar el puntero,
  * fuera de pantalla y con reduced-motion. Decorativo: todo se explica abajo.
  */
 export function Current({ className }: { className?: string }) {
@@ -79,10 +79,10 @@ export function Current({ className }: { className?: string }) {
   return (
     <div ref={ref} aria-hidden className={cn("group relative h-36 overflow-hidden sm:h-40", !play && "is-paused", className)}>
       {/* Agua: dos orillas desfasadas que se deslizan a distinto ritmo. */}
-      <svg viewBox={`0 0 ${W} 160`} preserveAspectRatio="none" className="anim-wave absolute inset-y-0 left-0 h-full w-[200%]" style={{ "--dur": "30s" } as CSSProperties}>
+      <svg viewBox={`0 0 ${W} 160`} preserveAspectRatio="none" className="anim-wave absolute inset-y-0 left-0 h-full w-[200%]" style={{ "--dur": "18s" } as CSSProperties}>
         <path d={bandBack} fill="#c3d2c8" />
       </svg>
-      <svg viewBox={`0 0 ${W} 160`} preserveAspectRatio="none" className="anim-wave absolute inset-y-0 left-0 h-full w-[200%]" style={{ "--dur": "20s" } as CSSProperties}>
+      <svg viewBox={`0 0 ${W} 160`} preserveAspectRatio="none" className="anim-wave absolute inset-y-0 left-0 h-full w-[200%]" style={{ "--dur": "12s" } as CSSProperties}>
         <defs>
           <linearGradient id="rio-banda" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0" stopColor="#a9bdb1" />
@@ -96,7 +96,7 @@ export function Current({ className }: { className?: string }) {
 
       {/* Lo que flota. */}
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]">
-        <div className="anim-marquee flex w-max items-center group-hover:[animation-play-state:paused]" style={{ "--dur": "80s" } as CSSProperties}>
+        <div className="anim-marquee flex w-max items-center group-hover:[animation-play-state:paused]" style={{ "--dur": "42s" } as CSSProperties}>
           {[0, 1, 2].map((copy) => (
             <div key={copy} className="flex items-center">
               {words.map((w, i) => (

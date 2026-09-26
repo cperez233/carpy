@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { AuditVisual, DataVisual, IntegrationVisual, SoftwareVisual, SupportVisual, WebVisual } from "./ServiceVisuals";
@@ -50,7 +50,7 @@ function Row({ s, open, onToggle }: RowProps) {
           onClick={onToggle}
           aria-expanded={open}
           aria-controls={panel}
-          className="group relative flex w-full items-center justify-between gap-6 py-5 text-left sm:py-6"
+          className="group relative flex w-full items-center justify-between gap-5 py-4 text-left sm:py-6"
         >
           {/* Banda que barre la fila al pasar el puntero. */}
           <span
@@ -66,7 +66,7 @@ function Row({ s, open, onToggle }: RowProps) {
             >
               {s.name}
             </span>
-            <span className="mt-1.5 block text-[1rem] font-medium text-ink-3">{s.title}</span>
+            <span className="mt-1 block text-[0.95rem] font-medium text-ink-3 sm:mt-1.5 sm:text-[1rem]">{s.title}</span>
           </span>
           <MandarinaToggle open={open} size={48} className="relative" />
         </button>
@@ -128,6 +128,10 @@ export function Services() {
   const [openId, setOpenId] = useState<Service["id"] | null>("software");
   const [lastId, setLastId] = useState<Service["id"]>("software");
   const active = services.find((s) => s.id === lastId) ?? services[0];
+  // En telefono la lista arranca cerrada: se lee de un vistazo y se abre lo que interese.
+  useEffect(() => {
+    if (!window.matchMedia("(min-width: 1024px)").matches) setOpenId(null);
+  }, []);
   const toggle = (id: Service["id"]) => {
     setOpenId((v) => (v === id ? null : id));
     setLastId(id);
@@ -137,9 +141,9 @@ export function Services() {
     <section
       id="servicios"
       aria-labelledby="servicios-title"
-      className="relative z-10 -mt-10 rounded-t-[40px] bg-paper-2 py-24 shadow-sheet sm:rounded-t-[56px] lg:py-32"
+      className="relative z-10 -mt-10 rounded-t-[40px] bg-paper-2 pb-16 pt-14 shadow-sheet sm:rounded-t-[56px] sm:py-24 lg:py-32"
     >
-      <Current className="-mt-12 mb-12 lg:-mt-16 lg:mb-20" />
+      <Current className="-mt-8 mb-8 sm:-mt-12 sm:mb-12 lg:-mt-16 lg:mb-20" />
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
@@ -148,12 +152,12 @@ export function Services() {
               <SplitWords text="Si es software, lo resolvemos." />
             </h2>
           </div>
-          <motion.p {...reveal} className="max-w-[30rem] text-[1.06rem] leading-[1.65] text-ink-3 lg:col-span-5">
+          <motion.p {...reveal} className="max-w-[30rem] text-[1rem] leading-[1.6] text-ink-3 sm:text-[1.06rem] lg:col-span-5">
             Esto es lo que más nos piden. Si lo tuyo no aparece, escríbenos igual: casi siempre hay una forma.
           </motion.p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-12">
+        <div className="mt-8 grid grid-cols-1 gap-14 sm:mt-14 lg:grid-cols-12 lg:gap-12">
           <motion.ul {...reveal} className="lg:col-span-6">
             {services.map((s) => (
               <Row
@@ -164,7 +168,7 @@ export function Services() {
               />
             ))}
             {/* La lista no se cierra aqui. */}
-            <li className="pt-8">
+            <li className="pt-6 sm:pt-8">
               <a
                 href="#contacto"
                 onClick={(e) => {

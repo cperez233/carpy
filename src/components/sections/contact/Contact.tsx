@@ -12,7 +12,7 @@ export function Contact() {
     <section
       id="contacto"
       aria-labelledby="contacto-title"
-      className="relative z-10 -mt-10 rounded-[40px] bg-paper-3 py-24 shadow-[var(--shadow-sheet),0_40px_60px_-30px_rgb(20_28_24/0.55)] sm:rounded-[56px] lg:py-32"
+      className="relative z-10 -mt-10 rounded-[40px] bg-paper-3 pb-14 pt-14 shadow-[var(--shadow-sheet),0_40px_60px_-30px_rgb(20_28_24/0.55)] sm:rounded-[56px] sm:py-24 lg:py-32"
     >
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end">
@@ -56,7 +56,7 @@ export function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-14"
+          className="mt-8 sm:mt-14"
         >
           <ContactForm />
         </motion.div>
