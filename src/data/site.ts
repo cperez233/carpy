@@ -8,7 +8,7 @@
 
 export interface SiteConfig {
   name: string;
-  /** Dominio de produccion, sin barra final. [COMPLETAR: dominio real de carpy] */
+  /** Dominio de produccion, sin barra final. */
   url: string;
   tagline: string;
   city: string;
@@ -44,7 +44,7 @@ export interface SiteConfig {
 
 export const site: SiteConfig = {
   name: "carpy",
-  url: "https://carpy.example",
+  url: "https://carpy.tech",
   tagline: "Software, páginas, integraciones, datos, auditoría y soporte",
   city: "Bucaramanga",
   region: "Santander",
