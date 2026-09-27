@@ -51,6 +51,9 @@ export function Team() {
  * desliza de lado con la siguiente tarjeta asomandose, para no apilar tres
  * perfiles completos uno debajo del otro.
  */
+/** Un color de hoja por persona, tomados de la escena del rio. */
+const tones = ["var(--color-water)", "#ecc9a0", "#c9b89a"];
+
 function Roster() {
   const row = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -77,7 +80,7 @@ function Roster() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-60px" }}
-        className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-6 pt-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:px-0 md:pt-0 lg:grid-cols-3"
+        className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-6 pr-6 pt-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:px-0 md:pt-0 lg:grid-cols-3"
       >
         {activeTeam.map((m, i) => (
           <TeamCard
@@ -86,6 +89,7 @@ function Roster() {
             layout="column"
             variants={staggerChild}
             seal={i === 0}
+            tone={tones[i % tones.length]}
             className="w-[84%] shrink-0 snap-start md:w-auto"
           />
         ))}
