@@ -2,7 +2,8 @@ import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { CarpyMark, Logo } from "../brand/CarpyMark";
 import { navItems, services } from "../../data/content";
-import { mailtoHref, site, whatsappHref } from "../../data/site";
+import { site, whatsappHref } from "../../data/site";
+import { EmailLink } from "../ui/EmailLink";
 import { handleAnchorClick } from "../../lib/scroll";
 import { autor, firmaInvisible } from "../../lib/firma";
 
@@ -28,9 +29,7 @@ export function Footer() {
               {site.tagline}, para empresas y entidades de {site.country}.
             </p>
             <div className="mt-4 flex flex-col">
-              <a href={mailtoHref} className="inline-flex min-h-10 items-center text-[1rem] font-semibold text-paper hover:text-mandarina">
-                {site.email}
-              </a>
+              <EmailLink location="footer" className="inline-flex min-h-10 items-center text-[1rem] font-semibold text-paper hover:text-mandarina" />
               {wa && (
                 <a href={wa} target="_blank" rel="noopener" className="inline-flex min-h-10 items-center text-[1rem] font-semibold text-paper hover:text-mandarina">
                   WhatsApp

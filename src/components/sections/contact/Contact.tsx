@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { ContactForm } from "./ContactForm";
 import { SectionLabel } from "../../ui/SectionLabel";
 import { SplitWords } from "../../ui/SplitWords";
-import { mailtoHref, site, whatsappHref } from "../../../data/site";
+import { whatsappHref } from "../../../data/site";
+import { EmailLink } from "../../ui/EmailLink";
 import { reveal } from "../../../lib/motion";
 import { track } from "../../../lib/track";
 
@@ -25,13 +26,10 @@ export function Contact() {
           <motion.div {...reveal} className="space-y-1 text-[1.03rem] text-ink-3 lg:col-span-5 lg:justify-self-end lg:text-right">
             <p>
               Escríbenos a{" "}
-              <a
-                href={mailtoHref}
-                onClick={() => track("email_click", { location: "contacto" })}
+              <EmailLink
+                location="contacto"
                 className="font-semibold text-ink underline decoration-ink/20 decoration-2 underline-offset-4 transition-colors hover:decoration-mandarina"
-              >
-                {site.email}
-              </a>
+              />
             </p>
             {wa && (
               <p>

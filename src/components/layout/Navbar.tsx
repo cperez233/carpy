@@ -3,7 +3,8 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-
 import { CarpyMark, Logo } from "../brand/CarpyMark";
 import { Magnetic } from "../ui/Magnetic";
 import { navItems } from "../../data/content";
-import { mailtoHref, site, whatsappHref } from "../../data/site";
+import { whatsappHref } from "../../data/site";
+import { EmailLink } from "../ui/EmailLink";
 import { handleAnchorClick, scrollToId } from "../../lib/scroll";
 import { bookingHref, bookingIsExternal, onBookingClick } from "../../lib/booking";
 import { cn } from "../../lib/cn";
@@ -229,9 +230,7 @@ export function Navbar() {
               className="border-t border-paper/15 px-6 py-6 text-[1rem] text-paper/70 sm:px-10"
             >
               <div className="flex flex-wrap gap-x-6 gap-y-1">
-                <a href={mailtoHref} className="inline-flex min-h-11 items-center font-semibold text-paper">
-                  {site.email}
-                </a>
+                <EmailLink location="menu" className="inline-flex min-h-11 items-center font-semibold text-paper" />
                 {wa && (
                   <a href={wa} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center font-semibold text-paper">
                     WhatsApp
