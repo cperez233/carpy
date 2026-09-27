@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { TeamCard } from "./TeamCard";
 import { SectionLabel } from "../../ui/SectionLabel";
@@ -33,18 +34,82 @@ export function Team() {
           </motion.p>
         </div>
 
-        <motion.div
-          variants={staggerParent}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
-          className={cn("mt-10 grid grid-cols-1 gap-10 sm:mt-16", n === 2 ? "md:grid-cols-2" : n >= 3 ? "md:grid-cols-2 lg:grid-cols-3" : "")}
-        >
-          {activeTeam.map((m) => (
-            <TeamCard key={m.id} member={m} layout={n === 1 ? "wide" : "column"} variants={staggerChild} />
-          ))}
-        </motion.div>
+        {n === 1 ? (
+          <motion.div variants={staggerParent} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} className="mt-10 sm:mt-16">
+            <TeamCard member={activeTeam[0]} layout="wide" variants={staggerChild} seal />
+          </motion.div>
+        ) : (
+          <Roster />
+        )}
       </div>
     </section>
+  );
+}
+
+/**
+ * Varios socios: columnas en escritorio. En telefono, un carrusel que se
+ * desliza de lado con la siguiente tarjeta asomandose, para no apilar tres
+ * perfiles completos uno debajo del otro.
+ */
+function Roster() {
+  const row = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+
+  const onScroll = () => {
+    const el = row.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement | null;
+    if (!card) return;
+    setIndex(Math.round(el.scrollLeft / (card.offsetWidth + 16)));
+  };
+  const go = (i: number) => {
+    const el = row.current;
+    const card = el?.children[i] as HTMLElement | undefined;
+    if (el && card) el.scrollTo({ left: card.offsetLeft - el.offsetLeft - 16, behavior: "smooth" });
+  };
+
+  return (
+    <div className="mt-10 sm:mt-16">
+      <motion.div
+        ref={row}
+        onScroll={onScroll}
+        variants={staggerParent}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-60px" }}
+        className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-6 pt-6 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:px-0 md:pt-0 lg:grid-cols-3"
+      >
+        {activeTeam.map((m, i) => (
+          <TeamCard
+            key={m.id}
+            member={m}
+            layout="column"
+            variants={staggerChild}
+            seal={i === 0}
+            className="w-[84%] shrink-0 snap-start md:w-auto"
+          />
+        ))}
+      </motion.div>
+      {/* Puntos del carrusel (solo telefono). */}
+      <div className="mt-2 flex items-center justify-center gap-2 md:hidden">
+        {activeTeam.map((m, i) => (
+          <button
+            key={m.id}
+            type="button"
+            onClick={() => go(i)}
+            aria-label={`Ver a ${m.name}`}
+            aria-current={index === i}
+            className="grid h-11 w-8 place-items-center"
+          >
+            <span
+              className={cn(
+                "block h-2 rounded-full transition-all duration-500 ease-[var(--ease-calm)]",
+                index === i ? "w-6 bg-mandarina" : "w-2 bg-ink/20",
+              )}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }

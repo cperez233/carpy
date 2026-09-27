@@ -12,6 +12,9 @@ interface TeamCardProps {
   /** `wide`: foto al lado (una sola persona). `column`: foto arriba. */
   layout?: "wide" | "column";
   variants?: Variants;
+  /** Muestra el sello giratorio (solo en una tarjeta, para no repetirlo). */
+  seal?: boolean;
+  className?: string;
 }
 
 function Initials({ name }: { name: string }) {
@@ -25,7 +28,7 @@ function Initials({ name }: { name: string }) {
 }
 
 /** Retrato que se abre de abajo hacia arriba; el texto se superpone al borde en telefono. */
-export function TeamCard({ member, layout = "column", variants }: TeamCardProps) {
+export function TeamCard({ member, layout = "column", variants, seal = false, className }: TeamCardProps) {
   const wide = layout === "wide";
   const first = member.name.split(" ")[0];
   const ref = useRef<HTMLDivElement>(null);
@@ -41,7 +44,7 @@ export function TeamCard({ member, layout = "column", variants }: TeamCardProps)
     <motion.article
       variants={variants}
       aria-labelledby={`${member.id}-name`}
-      className={cn(wide ? "grid grid-cols-1 items-center gap-0 md:grid-cols-12 md:gap-12" : "flex flex-col")}
+      className={cn(wide ? "grid grid-cols-1 items-center gap-0 md:grid-cols-12 md:gap-12" : "flex flex-col", className)}
     >
       <div ref={wrap} className={cn(wide && "md:col-span-5")}>
       <Tilt max={3} className="relative">
@@ -76,6 +79,7 @@ export function TeamCard({ member, layout = "column", variants }: TeamCardProps)
         )}
       </motion.div>
       {/* Sello que gira con el scroll, montado sobre la esquina de la foto. */}
+      {seal && (
       <motion.div
         aria-hidden
         initial={{ scale: 0, rotate: -90 }}
@@ -98,26 +102,27 @@ export function TeamCard({ member, layout = "column", variants }: TeamCardProps)
           </svg>
         </div>
       </motion.div>
+      )}
       </Tilt>
       </div>
 
       <div
         className={cn(
-          "relative z-10 mx-3 -mt-14 rounded-[28px] bg-paper-2 p-6 shadow-float sm:mx-6 sm:p-8",
-          wide && "md:col-span-7 md:mx-0 md:mt-0 md:bg-transparent md:p-0 md:shadow-none",
+          "relative z-10 mx-3 -mt-14 flex flex-1 flex-col rounded-[28px] bg-paper-2 p-6 shadow-float",
+          wide ? "sm:mx-6 sm:p-8 md:col-span-7 md:mx-0 md:mt-0 md:bg-transparent md:p-0 md:shadow-none" : "sm:mx-4",
         )}
       >
-        <p className="text-[1rem] font-semibold text-mandarina-ink">{member.specialty}</p>
-        <h3 id={`${member.id}-name`} className="mt-2 font-display text-[clamp(2rem,4vw,3.2rem)] font-medium leading-[1.02] tracking-[-0.03em] text-ink">
+        <p className={cn("font-semibold text-mandarina-ink", wide ? "text-[1rem]" : "text-[0.88rem] sm:text-[0.95rem]")}>{member.specialty}</p>
+        <h3 id={`${member.id}-name`} className={cn("mt-2 font-display font-medium leading-[1.02] tracking-[-0.03em] text-ink", wide ? "text-[clamp(2rem,4vw,3.2rem)]" : "text-[2rem] lg:text-[2.2rem]")}>
           {member.name}
         </h3>
         <p className="mt-2 text-[1.02rem] font-medium text-ink-3">
           {member.role}
         </p>
-        <p className="mt-4 max-w-[34rem] text-[1.02rem] leading-[1.6] text-ink-2 sm:mt-6 sm:text-[1.08rem] sm:leading-[1.65]">{member.bio}</p>
+        <p className={cn("mt-4 max-w-[34rem] text-[1.02rem] leading-[1.6] text-ink-2", wide && "sm:mt-6 sm:text-[1.08rem] sm:leading-[1.65]")}>{member.bio}</p>
 
         {member.focus.length > 0 && (
-          <ul className="mt-7 hidden max-w-[34rem] sm:block">
+          <ul className="mt-6 hidden max-w-[34rem] sm:block">
             {member.focus.map((f, i) => (
               <motion.li
                 key={f}
@@ -125,16 +130,16 @@ export function TeamCard({ member, layout = "column", variants }: TeamCardProps)
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 + i * 0.07, ease }}
-                className="flex items-baseline justify-between gap-4 border-t border-ink/10 py-2.5 text-[1rem] text-ink"
+                className={cn("flex items-baseline justify-between gap-4 border-t border-ink/10 text-ink", wide ? "py-2.5 text-[1rem]" : "py-2 text-[0.95rem]")}
               >
                 {f}
               </motion.li>
             ))}
           </ul>
         )}
-        {member.stack.length > 0 && <p className="mt-4 text-[0.95rem] text-ink-3">Trabaja con {member.stack.join(", ")}.</p>}
+        {member.stack.length > 0 && <p className={cn("mt-4 text-[0.95rem] text-ink-3", !wide && "hidden sm:block")}>Trabaja con {member.stack.join(", ")}.</p>}
 
-        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 sm:mt-8">
+        <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-2 pt-6 sm:pt-8">
           {member.portfolio && (
             <motion.a
               href={member.portfolio.href}
