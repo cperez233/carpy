@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { CarpyMark } from "../../brand/CarpyMark";
 import { requestTypes, type RequestType } from "../../../data/content";
-import { site, whatsappHref } from "../../../data/site";
+import { composeLinks, site, whatsappHref } from "../../../data/site";
 import { cn } from "../../../lib/cn";
 import { ease, layoutSpring } from "../../../lib/motion";
 import { track } from "../../../lib/track";
@@ -52,7 +52,18 @@ export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [trap, setTrap] = useState("");
   const errors = validate(f);
-  const { body } = compose(f);
+  const { subject, body } = compose(f);
+  const [copied, setCopied] = useState(false);
+
+  async function copyMessage() {
+    try {
+      await navigator.clipboard.writeText(`Para: ${site.email}\nAsunto: ${subject}\n\n${body}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    } catch {
+      /* sin permiso de portapapeles: el correo sigue visible en el texto */
+    }
+  }
 
   useEffect(() => {
     const on = (e: Event) => {
@@ -74,21 +85,30 @@ export function ContactForm() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!touchAll() || trap) return;
-    const { subject, body } = compose(f);
-    track("contacto_enviar", { type: f.type, channel: site.formEndpoint ? "form" : "email" });
-    if (!site.formEndpoint) {
-      window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    track("contacto_enviar", { type: f.type, channel: site.web3formsKey ? "form" : "email" });
+    if (!site.web3formsKey) {
       setStatus("mail");
       return;
     }
     setStatus("sending");
     try {
-      const res = await fetch(site.formEndpoint, {
+      // Web3Forms lista cada campo en el correo; `email` queda como reply-to.
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ ...f, subject, _subject: subject }),
+        body: JSON.stringify({
+          access_key: site.web3formsKey,
+          subject: `Sitio web · ${subject}`,
+          from_name: `${f.name.trim()} (carpy.tech)`,
+          Nombre: f.name.trim(),
+          Empresa: f.org.trim() || "—",
+          email: f.email.trim(),
+          Tipo: requestTypes.find((r) => r.id === f.type)!.label,
+          Mensaje: f.message.trim(),
+        }),
       });
-      setStatus(res.ok ? "sent" : "error");
+      const data = (await res.json().catch(() => null)) as { success?: boolean } | null;
+      setStatus(res.ok && data?.success ? "sent" : "error");
     } catch {
       setStatus("error");
     }
@@ -122,13 +142,42 @@ export function ContactForm() {
                 <CarpyMark className="h-14 w-auto text-ink" cutout="var(--color-paper-3)" />
               </motion.span>
               <h3 className="mt-6 font-display text-[2.2rem] font-medium tracking-[-0.03em] text-ink">
-                {status === "sent" ? "Recibimos tu mensaje." : "Tu correo está listo para enviar."}
+                {status === "sent" ? "Recibimos tu mensaje." : "Tu correo está listo."}
               </h3>
               <p className="mt-2 max-w-[28rem] text-[1.05rem] leading-[1.65] text-ink-2">
                 {status === "sent"
                   ? "Te respondemos por correo en menos de un día hábil."
-                  : `Abrimos tu aplicación de correo con el mensaje escrito. Si no se abrió, escríbenos a ${site.email}.`}
+                  : `Elige dónde enviarlo; el mensaje ya va escrito para ${site.email}.`}
               </p>
+              {status === "mail" && (
+                <div className="mt-6 flex flex-wrap gap-2.5">
+                  {(
+                    [
+                      ["gmail", "Gmail"],
+                      ["outlook", "Outlook"],
+                      ["app", "Otra app de correo"],
+                    ] as const
+                  ).map(([k, label]) => (
+                    <a
+                      key={k}
+                      href={composeLinks(subject, body)[k]}
+                      target={k === "app" ? undefined : "_blank"}
+                      rel={k === "app" ? undefined : "noopener"}
+                      onClick={() => track("email_click", { location: "formulario", client: k, type: f.type })}
+                      className="inline-flex min-h-11 items-center rounded-full bg-paper-2 px-5 text-[0.98rem] font-semibold text-ink ring-1 ring-ink/10 transition-[box-shadow,transform] duration-200 hover:ring-ink/25 active:scale-[0.97]"
+                    >
+                      {label}
+                    </a>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={copyMessage}
+                    className="inline-flex min-h-11 items-center rounded-full px-5 text-[0.98rem] font-semibold text-ink-2 ring-1 ring-ink/10 transition-[box-shadow,transform] duration-200 hover:text-ink hover:ring-ink/25 active:scale-[0.97]"
+                  >
+                    {copied ? "Copiado ✓" : "Copiar mensaje"}
+                  </button>
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setStatus("idle")}
@@ -245,7 +294,11 @@ export function ContactForm() {
               </div>
               {status === "error" && (
                 <p role="alert" className="mt-4 text-[0.95rem] font-semibold text-fail">
-                  No pudimos enviar el formulario. Escríbenos a {site.email} y te respondemos igual.
+                  No pudimos enviar el formulario.{" "}
+                  <button type="button" onClick={() => setStatus("mail")} className="underline underline-offset-4">
+                    Envíalo desde tu correo
+                  </button>{" "}
+                  y te respondemos igual.
                 </p>
               )}
               <p className="mt-5 text-[0.9rem] text-ink-3">Usamos tus datos solo para responder este mensaje.</p>

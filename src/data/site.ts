@@ -31,11 +31,12 @@ export interface SiteConfig {
    */
   bookingUrl: string | null;
   /**
-   * Endpoint que recibe el formulario por POST JSON (Formspree, Web3Forms,
-   * una funcion propia). Si es `null`, el formulario abre el correo del
-   * visitante con el mensaje ya escrito.
+   * Access key de Web3Forms (web3forms.com). Con ella el formulario envia
+   * el mensaje directo a `email` sin abrir ninguna app. Es publica por
+   * diseno: puede ir en el codigo. Si es `null`, el formulario ofrece
+   * Gmail, Outlook o la app de correo con el mensaje ya escrito.
    */
-  formEndpoint: string | null;
+  web3formsKey: string | null;
   /** Perfiles de la empresa (LinkedIn, GitHub...). Vacio hasta que existan. */
   sameAs: string[];
   /** Fecha de la ultima revision del contenido (sitemap y JSON-LD). */
@@ -54,7 +55,7 @@ export const site: SiteConfig = {
   email: "carpyenterprise@gmail.com",
   whatsapp: "+573334337931",
   bookingUrl: null,
-  formEndpoint: null,
+  web3formsKey: "94c09bfb-ccd1-4062-a520-e03cbae28e83",
   sameAs: [],
   lastModified: "2026-09-26",
 };
@@ -65,3 +66,18 @@ export function whatsappHref(message: string): string | null {
 }
 
 export const mailtoHref = `mailto:${site.email}`;
+
+/**
+ * `mailto:` abre la app predeterminada del sistema (en Windows suele ser
+ * Outlook aunque nadie lo use). Por eso damos tambien Gmail y Outlook web.
+ */
+export function composeLinks(subject: string, body: string) {
+  const to = encodeURIComponent(site.email);
+  const su = encodeURIComponent(subject);
+  const b = encodeURIComponent(body);
+  return {
+    gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${b}`,
+    outlook: `https://outlook.live.com/mail/0/deeplink/compose?to=${to}&subject=${su}&body=${b}`,
+    app: `mailto:${site.email}?subject=${su}&body=${b}`,
+  };
+}
