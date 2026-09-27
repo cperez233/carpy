@@ -31,6 +31,15 @@ export function Hero() {
               id="hero-title"
               className="font-display text-[clamp(2.9rem,10.5vw,5.6rem)] font-medium leading-[0.95] tracking-[-0.035em] text-ink"
             >
+              {/* La oferta va dentro del H1 (visible), para que el titulo diga que se vende. */}
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.05, ease }}
+                className="mb-4 block font-sans text-[1rem] font-semibold leading-snug tracking-normal text-mandarina-ink sm:mb-5 sm:text-[1.05rem]"
+              >
+                Software a medida, páginas, integraciones y auditoría
+              </motion.span>
               <span className="block">
                 <SplitWords trigger="mount" text="El capibara" delay={0.1} />
               </span>

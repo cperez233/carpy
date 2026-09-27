@@ -155,11 +155,14 @@ export function CapyScene({ className }: { className?: string }) {
         {/* Juncos de adelante. */}
         <motion.g style={{ x: frontX, y: frontY }}>
         <g stroke="#4f6a3e" strokeWidth="3.4" strokeLinecap="round" fill="none">
-          <path className="anim-sway" style={{ "--dur": "6.5s" } as CSSProperties} d="M26 380 C24 320 30 270 18 214" />
           <path className="anim-sway" style={{ "--dur": "5.5s", "--delay": "-1.5s" } as CSSProperties} d="M40 380 C42 330 46 290 58 246" />
           <path className="anim-sway" style={{ "--dur": "7.5s", "--delay": "-3s" } as CSSProperties} d="M12 380 C12 340 6 300 0 276" />
         </g>
-        <ellipse cx="18" cy="206" rx="4" ry="13" fill="#6b4d33" className="anim-sway" style={{ "--dur": "6.5s" } as CSSProperties} />
+        {/* Espadana: tallo y cabeza giran juntos desde la base, como una sola pieza. */}
+        <g className="anim-sway" style={{ "--dur": "6.5s" } as CSSProperties}>
+          <path d="M26 380 C24 320 30 270 18 214" stroke="#4f6a3e" strokeWidth="3.4" strokeLinecap="round" fill="none" />
+          <ellipse cx="18" cy="204" rx="4" ry="13" fill="#6b4d33" />
+        </g>
         </motion.g>
 
         {/* Libelula: da vueltas perezosas sobre el agua. */}

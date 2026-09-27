@@ -4,6 +4,7 @@ import { CarpyMark, Logo } from "../brand/CarpyMark";
 import { navItems, services } from "../../data/content";
 import { mailtoHref, site, whatsappHref } from "../../data/site";
 import { handleAnchorClick } from "../../lib/scroll";
+import { autor, firmaInvisible } from "../../lib/firma";
 
 const linkCls = "inline-flex min-h-10 items-center text-[1rem] text-paper/65 transition-colors hover:text-paper";
 
@@ -71,7 +72,18 @@ export function Footer() {
           <p>
             © 2026 {site.name}.
           </p>
-          <p>Hecho con calma.</p>
+          <p>
+            Hecho con calma por{" "}
+            <a
+              href={autor.url}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex min-h-10 items-center text-paper/60 underline decoration-paper/20 underline-offset-4 transition-colors hover:text-paper hover:decoration-mandarina"
+            >
+              {autor.nombre}
+            </a>
+            {firmaInvisible}
+          </p>
         </div>
       </div>
 

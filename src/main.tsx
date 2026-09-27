@@ -16,5 +16,8 @@ const app = (
 if (root.firstElementChild) hydrateRoot(root, app);
 else createRoot(root).render(app);
 
+// Firma para quien abra la consola.
+console.info("%ccarpy%c · diseño y desarrollo: Cristian Pérez · https://cristianperez.me", "font-weight:700;color:#d9772b", "color:inherit");
+
 // Recargar siempre arranca arriba (no se guarda #seccion en la URL).
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
