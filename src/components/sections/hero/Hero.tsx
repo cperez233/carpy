@@ -29,13 +29,17 @@ export function Hero() {
           <div className="lg:col-span-6">
             <h1
               id="hero-title"
-              className="font-display text-[clamp(3.3rem,11vw,6.6rem)] font-medium leading-[0.94] tracking-[-0.035em] text-ink"
+              className="font-display text-[clamp(2.9rem,10.5vw,5.6rem)] font-medium leading-[0.95] tracking-[-0.035em] text-ink"
             >
               <span className="block">
-                <SplitWords trigger="mount" text="Software" delay={0.1} />
+                <SplitWords trigger="mount" text="El capibara" delay={0.1} />
               </span>
               <span className="block">
-                <SplitWords trigger="mount" text="sin sustos." delay={0.22} />
+                <SplitWords trigger="mount" text="no se estresa." delay={0.22} />
+              </span>
+              {/* Remate en gris: la promesa. */}
+              <span className="mt-3 block text-[0.5em] leading-[1.1] tracking-[-0.02em] text-ink/45">
+                <SplitWords trigger="mount" text="Tu software tampoco." delay={0.42} />
               </span>
             </h1>
             <motion.p
@@ -44,7 +48,7 @@ export function Hero() {
               transition={{ duration: 0.9, delay: 0.55, ease }}
               className="mt-6 max-w-[30rem] text-[1.15rem] font-medium sm:mt-8 leading-[1.5] text-ink-2 sm:text-[1.3rem]"
             >
-              Resolvemos lo que tu empresa necesite en software, sin afán y de buena manera, como el capibara.
+              Resolvemos lo que tu empresa necesite en software, sin afán y de buena manera.
             </motion.p>
             <motion.p
               initial={{ opacity: 0, y: 16 }}

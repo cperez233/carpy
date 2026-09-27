@@ -104,7 +104,7 @@ export function TeamCard({ member, layout = "column", variants, seal = false, to
                     <path id={`sello-${member.id}`} d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" />
                   </defs>
                   <text className="fill-ink font-sans text-[11.5px] font-semibold tracking-[0.16em]">
-                    <textPath href={`#sello-${member.id}`}>SOFTWARE SIN SUSTOS · CARPY · </textPath>
+                    <textPath href={`#sello-${member.id}`}>EL CAPIBARA NO SE ESTRESA · </textPath>
                   </text>
                 </motion.svg>
                 <svg viewBox="0 0 20 20" className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2">
