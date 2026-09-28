@@ -73,7 +73,7 @@ export function TeamCard({ member, layout = "column", variants, seal = false, to
             initial={{ clipPath: "inset(35% 0% 0% 0% round 30px)", opacity: 0, y: 50 }}
             animate={seen ? { clipPath: "inset(0% 0% 0% 0% round 30px)", opacity: 1, y: 0 } : undefined}
             transition={{ duration: 1.1, delay: 0.1, ease }}
-            className="relative aspect-square overflow-hidden rounded-[30px] bg-paper-3 shadow-raised sm:aspect-[4/5]"
+            className="relative overflow-hidden rounded-[30px] bg-paper-3 shadow-raised aspect-[5/6] sm:aspect-[4/5]"
           >
             {member.photo ? (
               <motion.img

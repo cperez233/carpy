@@ -101,8 +101,8 @@ export function CapyScene({ className }: { className?: string }) {
           <path d="M346 124 Q354 119 362 124" fill="none" stroke="var(--color-fur-2)" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
           {/* Fosa nasal, boca y mejilla. */}
           <ellipse cx="430" cy="146" rx="2.6" ry="4.2" fill="#2e211a" transform="rotate(12 430 146)" />
-          <path d="M414 216 Q424 219 432 212" fill="none" stroke="#5e3d27" strokeWidth="2.2" strokeLinecap="round" />
-          <path d="M366 196 C382 212 400 220 420 218" fill="none" stroke="var(--color-fur-2)" strokeWidth="2" opacity="0.45" />
+          <path d="M404 208 Q413 212 421 206" fill="none" stroke="#5e3d27" strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M366 196 C380 208 394 214 406 213" fill="none" stroke="var(--color-fur-2)" strokeWidth="2" opacity="0.45" />
 
           {/* La mandarina. */}
           <motion.g
