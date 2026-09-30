@@ -345,7 +345,13 @@ export const en: Dict = {
   },
   email: { subject: "Contact from carpy.tech", app: "Email app", copy: "Copy email", copied: "Copied ✓" },
   footer: {
-    blurb: "Software, websites, integrations, data, audits and support, for companies and public entities in Colombia and Latin America.",
+    blurb: "Software, websites, integrations, data, audits and support, for companies and public entities in Colombia and worldwide.",
+    inPerson: "In person in",
+    cities: [
+      { city: "Barrancabermeja", who: "Cris" },
+      { city: "Bucaramanga", who: "Cris and Jorge" },
+      { city: "Valledupar", who: "Javier" },
+    ],
     madeBy: "Calmly made by",
   },
   jsonLd: {

@@ -129,6 +129,6 @@ export interface Dict {
     requestTypes: RequestType[];
   };
   email: { subject: string; app: string; copy: string; copied: string };
-  footer: { blurb: string; madeBy: string };
+  footer: { blurb: string; madeBy: string; inPerson: string; cities: { city: string; who: string }[] };
   jsonLd: { orgDescription: string; knowsAbout: string[]; remote: string };
 }

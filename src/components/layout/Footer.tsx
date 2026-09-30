@@ -38,6 +38,18 @@ export function Footer() {
                 </a>
               )}
             </div>
+            <div className="mt-5">
+              <h2 className="text-[0.95rem] font-semibold text-paper">{t.footer.inPerson}</h2>
+              <ul className="mt-2 flex flex-wrap gap-2">
+                {t.footer.cities.map((c) => (
+                  <li key={c.city} className="inline-flex items-center gap-2 rounded-full border border-paper/15 px-3 py-1.5 text-[0.9rem] text-paper/75">
+                    <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-mandarina" />
+                    {c.city}
+                    <span className="text-paper/45">· {c.who}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           <nav aria-label={t.nav.sections} className="md:col-span-3">
             <h2 className="text-[0.95rem] font-semibold text-paper">{t.nav.sections}</h2>
