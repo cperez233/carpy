@@ -10,7 +10,7 @@ export const es: Dict = {
     ogLocale: "es_CO",
     title: "Software a medida, integraciones y auditoría | carpy",
     description:
-      "Consultoría de software en Bucaramanga: sistemas a medida, páginas y tiendas en línea, integraciones, tableros de datos, auditorías de software y procesos, y soporte técnico.",
+      "Consultoría de software en Colombia y el mundo: sistemas a medida, páginas y tiendas en línea, integraciones, tableros de datos, auditorías de software y procesos, y soporte técnico.",
     ogTitle: "El capibara no se estresa | carpy",
     ogDescription: "Resolvemos lo que tu empresa necesite en software, sin afán y de buena manera.",
     ogImageAlt: "carpy: software a medida, integraciones y auditoría",
@@ -291,7 +291,7 @@ export const es: Dict = {
       },
       {
         q: "¿Dónde están?",
-        a: "En Bucaramanga. Nos reunimos en persona en el área metropolitana y trabajamos de forma remota con el resto del país.",
+        a: "En Colombia: presencial en Barrancabermeja, Bucaramanga y Valledupar, y de forma remota con clientes de todo el país y del exterior.",
       },
     ],
   },
@@ -372,6 +372,6 @@ export const es: Dict = {
       "Automatización de procesos",
       "Inteligencia artificial aplicada",
     ],
-    remote: "Latinoamérica (remoto)",
+    remote: "Colombia e internacional (remoto)",
   },
 };

@@ -7,7 +7,7 @@ export const en: Dict = {
     ogLocale: "en_US",
     title: "Custom software, integrations and audits | carpy",
     description:
-      "Software consultancy in Bucaramanga, Colombia: custom systems, websites and online stores, integrations, data dashboards, software and process audits, and technical support.",
+      "Software consultancy in Colombia and worldwide: custom systems, websites and online stores, integrations, data dashboards, software and process audits, and technical support.",
     ogTitle: "The capybara stays calm | carpy",
     ogDescription: "We solve whatever your business needs in software, calmly and done right.",
     ogImageAlt: "carpy: custom software, integrations and audits",
@@ -287,7 +287,7 @@ export const en: Dict = {
       },
       {
         q: "Where are you based?",
-        a: "In Bucaramanga, Colombia. We meet in person in the metro area and work remotely with clients across Colombia and Latin America.",
+        a: "In Colombia: in person in Barrancabermeja, Bucaramanga and Valledupar, and remotely with clients across Colombia and worldwide.",
       },
     ],
   },
@@ -368,6 +368,6 @@ export const en: Dict = {
       "Process automation",
       "Applied artificial intelligence",
     ],
-    remote: "Latin America (remote)",
+    remote: "Colombia and worldwide (remote)",
   },
 };
