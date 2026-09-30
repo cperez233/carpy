@@ -2,18 +2,8 @@ import type { CSSProperties, ReactNode } from "react";
 import { cn } from "../../lib/cn";
 import { useLoopInView } from "../../lib/useLoopInView";
 import { CarpyMark } from "../brand/CarpyMark";
+import { useI18n } from "../../i18n/context";
 
-const words = [
-  "Software",
-  "Páginas web",
-  "Auditorías",
-  "Integraciones",
-  "Apps",
-  "Datos",
-  "Seguridad",
-  "Automatización",
-  "Soporte",
-];
 
 /** Orilla ondulada: periodo de 200 unidades para que el bucle a -50% no se note. */
 const W = 2400;
@@ -74,6 +64,7 @@ function Floaty({ kind, bob }: { kind: "fruit" | "pad" | "capy"; bob: number }) 
  * fuera de pantalla y con reduced-motion. Decorativo: todo se explica abajo.
  */
 export function Current({ className }: { className?: string }) {
+  const words = useI18n().t.current;
   const { ref, play } = useLoopInView<HTMLDivElement>("0px");
   const kinds = ["fruit", "pad", "fruit", "capy", "pad", "fruit", "pad", "fruit", "pad"] as const;
   return (
@@ -100,7 +91,7 @@ export function Current({ className }: { className?: string }) {
           {[0, 1, 2].map((copy) => (
             <div key={copy} className="flex items-center">
               {words.map((w, i) => (
-                <span key={w} className="flex items-center">
+                <span key={i} className="flex items-center">
                   <span
                     className="anim-bob inline-block whitespace-nowrap font-display text-[clamp(1.5rem,3vw,2.4rem)] font-medium tracking-[-0.02em] text-ink/75 transition-colors duration-500 hover:text-ink"
                     style={{ "--bob": `${-i * 0.7}s` } as CSSProperties}

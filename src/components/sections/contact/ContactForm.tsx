@@ -2,12 +2,14 @@ import { useEffect, useId, useState, type FormEvent, type ReactNode } from "reac
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { CarpyMark } from "../../brand/CarpyMark";
-import { requestTypes, type RequestType } from "../../../data/content";
+import type { RequestType } from "../../../data/content";
 import { composeLinks, site, whatsappHref } from "../../../data/site";
 import { cn } from "../../../lib/cn";
 import { ease, layoutSpring } from "../../../lib/motion";
 import { track } from "../../../lib/track";
 import { REQUEST_EVENT } from "../services/Services";
+import { useI18n } from "../../../i18n/context";
+import { dicts, type Dict } from "../../../i18n/locales";
 
 interface Fields {
   name: string;
@@ -21,23 +23,23 @@ type Status = "idle" | "sending" | "sent" | "mail" | "error";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-function validate(f: Fields): Errors {
+function validate(f: Fields, t: Dict["form"]): Errors {
   const e: Errors = {};
-  if (f.name.trim().length < 2) e.name = "Escribe tu nombre.";
-  if (!EMAIL_RE.test(f.email.trim())) e.email = "Revisa el correo: parece incompleto.";
-  if (f.message.trim().length < 15) e.message = "Cuéntanos un poco más (mínimo 15 caracteres).";
+  if (f.name.trim().length < 2) e.name = t.errName;
+  if (!EMAIL_RE.test(f.email.trim())) e.email = t.errEmail;
+  if (f.message.trim().length < 15) e.message = t.errMessage;
   return e;
 }
 
-function compose(f: Fields) {
-  const t = requestTypes.find((r) => r.id === f.type)!;
-  const subject = `${t.label}${f.org.trim() ? ` · ${f.org.trim()}` : ""}`;
+function compose(f: Fields, t: Dict["form"]) {
+  const type = t.requestTypes.find((r) => r.id === f.type)!;
+  const subject = `${type.label}${f.org.trim() ? ` · ${f.org.trim()}` : ""}`;
   const body = [
-    `Hola, soy ${f.name.trim() || "(tu nombre)"}${f.org.trim() ? ` de ${f.org.trim()}` : ""}. ${t.opener}`,
+    `${t.hello(f.name.trim() || t.yourName, f.org.trim())} ${type.opener}`,
     "",
-    f.message.trim() || "(tu mensaje)",
+    f.message.trim() || t.yourMessage,
     "",
-    `Mi correo: ${f.email.trim() || "(tu correo)"}`,
+    `${t.myEmail}: ${f.email.trim() || t.yourEmail}`,
   ].join("\n");
   return { subject, body };
 }
@@ -46,18 +48,21 @@ const input =
   "mt-2 block w-full rounded-2xl border-0 bg-paper-2 px-4 py-3 text-[1.02rem] text-ink shadow-rest ring-1 ring-ink/8 transition-[box-shadow] duration-200 placeholder:text-ink-3/70 hover:ring-ink/20 focus:outline-none focus:ring-2 focus:ring-mandarina aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-fail/60";
 
 export function ContactForm() {
+  const { locale, t: dict } = useI18n();
+  const t = dict.form;
+  const requestTypes = t.requestTypes;
   const uid = useId();
   const [f, setF] = useState<Fields>({ name: "", org: "", email: "", type: "software", message: "" });
   const [touched, setTouched] = useState<Partial<Record<keyof Fields, boolean>>>({});
   const [status, setStatus] = useState<Status>("idle");
   const [trap, setTrap] = useState("");
-  const errors = validate(f);
-  const { subject, body } = compose(f);
+  const errors = validate(f, t);
+  const { subject, body } = compose(f, t);
   const [copied, setCopied] = useState(false);
 
   async function copyMessage() {
     try {
-      await navigator.clipboard.writeText(`Para: ${site.email}\nAsunto: ${subject}\n\n${body}`);
+      await navigator.clipboard.writeText(`${t.to}: ${site.email}\n${t.subject}: ${subject}\n\n${body}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
     } catch {
@@ -68,7 +73,7 @@ export function ContactForm() {
   useEffect(() => {
     const on = (e: Event) => {
       const id = (e as CustomEvent<string>).detail;
-      if (requestTypes.some((r) => r.id === id)) setF((x) => ({ ...x, type: id as RequestType["id"] }));
+      if (dicts.es.form.requestTypes.some((r) => r.id === id)) setF((x) => ({ ...x, type: id as RequestType["id"] }));
     };
     window.addEventListener(REQUEST_EVENT, on);
     return () => window.removeEventListener(REQUEST_EVENT, on);
@@ -79,7 +84,7 @@ export function ContactForm() {
   const blur = (k: keyof Fields) => () => setTouched((t) => ({ ...t, [k]: true }));
   const touchAll = () => {
     setTouched({ name: true, email: true, message: true });
-    return Object.keys(validate(f)).length === 0;
+    return Object.keys(validate(f, t)).length === 0;
   };
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -98,12 +103,14 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           access_key: site.web3formsKey,
-          subject: `Sitio web · ${subject}`,
+          subject: `Sitio web${locale === "es" ? "" : ` (${locale.toUpperCase()})`} · ${subject}`,
           from_name: `${f.name.trim()} (carpy.tech)`,
           Nombre: f.name.trim(),
           Empresa: f.org.trim() || "—",
           email: f.email.trim(),
-          Tipo: requestTypes.find((r) => r.id === f.type)!.label,
+          // Para el equipo, el tipo siempre en espanol; el idioma del cliente aparte.
+          Tipo: dicts.es.form.requestTypes.find((r) => r.id === f.type)!.label,
+          Idioma: dict.langName,
           Mensaje: f.message.trim(),
         }),
       });
@@ -116,7 +123,7 @@ export function ContactForm() {
 
   function onWhatsapp() {
     if (!touchAll()) return;
-    const href = whatsappHref(compose(f).body);
+    const href = whatsappHref(compose(f, t).body);
     if (!href) return;
     track("whatsapp_click", { location: "formulario", type: f.type });
     window.open(href, "_blank", "noopener");
@@ -142,12 +149,10 @@ export function ContactForm() {
                 <CarpyMark className="h-14 w-auto text-ink" cutout="var(--color-paper-3)" />
               </motion.span>
               <h3 className="mt-6 font-display text-[2.2rem] font-medium tracking-[-0.03em] text-ink">
-                {status === "sent" ? "Recibimos tu mensaje." : "Tu correo está listo."}
+                {status === "sent" ? t.sentTitle : t.mailTitle}
               </h3>
               <p className="mt-2 max-w-[28rem] text-[1.05rem] leading-[1.65] text-ink-2">
-                {status === "sent"
-                  ? "Te respondemos por correo en menos de un día hábil."
-                  : `Elige dónde enviarlo; el mensaje ya va escrito para ${site.email}.`}
+                {status === "sent" ? t.sentBody : t.mailBody(site.email)}
               </p>
               {status === "mail" && (
                 <div className="mt-6 flex flex-wrap gap-2.5">
@@ -155,7 +160,7 @@ export function ContactForm() {
                     [
                       ["gmail", "Gmail"],
                       ["outlook", "Outlook"],
-                      ["app", "Otra app de correo"],
+                      ["app", t.otherApp],
                     ] as const
                   ).map(([k, label]) => (
                     <a
@@ -174,7 +179,7 @@ export function ContactForm() {
                     onClick={copyMessage}
                     className="inline-flex min-h-11 items-center rounded-full px-5 text-[0.98rem] font-semibold text-ink-2 ring-1 ring-ink/10 transition-[box-shadow,transform] duration-200 hover:text-ink hover:ring-ink/25 active:scale-[0.97]"
                   >
-                    {copied ? "Copiado ✓" : "Copiar mensaje"}
+                    {copied ? t.copied : t.copyMessage}
                   </button>
                 </div>
               )}
@@ -183,13 +188,13 @@ export function ContactForm() {
                 onClick={() => setStatus("idle")}
                 className="mt-7 inline-flex min-h-11 items-center font-semibold text-ink underline decoration-mandarina decoration-2 underline-offset-[6px]"
               >
-                Volver al formulario
+                {t.back}
               </button>
             </motion.div>
           ) : (
             <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
               <fieldset>
-                <legend className="text-[1rem] font-semibold text-ink">¿Qué necesitas?</legend>
+                <legend className="text-[1rem] font-semibold text-ink">{t.need}</legend>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {requestTypes.map((r) => {
                     const on = f.type === r.id;
@@ -211,7 +216,7 @@ export function ContactForm() {
               </fieldset>
 
               <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-7 sm:grid-cols-2 sm:gap-5">
-                <Field id={`${uid}-name`} label="Nombre" error={err("name")}>
+                <Field id={`${uid}-name`} label={t.name} error={err("name")}>
                   <input
                     id={`${uid}-name`}
                     name="name"
@@ -225,12 +230,12 @@ export function ContactForm() {
                     required
                   />
                 </Field>
-                <Field id={`${uid}-org`} label="Empresa" hint="Opcional">
+                <Field id={`${uid}-org`} label={t.org} hint={t.optional}>
                   <input id={`${uid}-org`} name="organization" autoComplete="organization" value={f.org} onChange={(e) => set("org")(e.target.value)} className={input} />
                 </Field>
               </div>
               <div className="mt-5">
-                <Field id={`${uid}-email`} label="Correo" error={err("email")}>
+                <Field id={`${uid}-email`} label={t.email} error={err("email")}>
                   <input
                     id={`${uid}-email`}
                     name="email"
@@ -248,7 +253,7 @@ export function ContactForm() {
                 </Field>
               </div>
               <div className="mt-5">
-                <Field id={`${uid}-message`} label="Cuéntanos en dos o tres frases" error={err("message")}>
+                <Field id={`${uid}-message`} label={t.message} error={err("message")}>
                   <textarea
                     id={`${uid}-message`}
                     name="message"
@@ -258,7 +263,7 @@ export function ContactForm() {
                     onBlur={blur("message")}
                     aria-invalid={Boolean(err("message"))}
                     aria-describedby={err("message") ? `${uid}-message-error` : undefined}
-                    placeholder="Ej.: llevamos los pedidos en WhatsApp y un Excel, y queremos un sistema que facture solo."
+                    placeholder={t.placeholder}
                     className={cn(input, "resize-y leading-[1.55]")}
                     required
                   />
@@ -267,7 +272,7 @@ export function ContactForm() {
 
               <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
                 <label>
-                  No llenar
+                  {t.trap}
                   <input tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
                 </label>
               </div>
@@ -280,7 +285,7 @@ export function ContactForm() {
                     className="group relative isolate inline-flex min-h-12 items-center justify-center gap-2.5 overflow-hidden rounded-full bg-ink px-6 text-[1rem] font-semibold text-paper-2 shadow-raised transition-[transform,color] duration-300 hover:-translate-y-0.5 hover:text-ink active:translate-y-0 active:scale-[0.97]"
                   >
                     <span aria-hidden className="absolute inset-0 -z-10 translate-y-full bg-mandarina transition-transform duration-500 ease-[var(--ease-calm)] group-hover:translate-y-0" />
-                    Enviar por WhatsApp
+                    {t.sendWhatsapp}
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} aria-hidden />
                   </button>
                 )}
@@ -289,19 +294,19 @@ export function ContactForm() {
                   disabled={status === "sending"}
                   className="inline-flex min-h-12 items-center justify-center rounded-full px-6 text-[1rem] font-semibold text-ink ring-1 ring-ink/20 transition-[background-color,transform] duration-200 hover:bg-ink/5 active:scale-[0.97] disabled:cursor-wait disabled:opacity-70"
                 >
-                  {status === "sending" ? "Enviando…" : "Enviar por correo"}
+                  {status === "sending" ? t.sending : t.sendEmail}
                 </button>
               </div>
               {status === "error" && (
                 <p role="alert" className="mt-4 text-[0.95rem] font-semibold text-fail">
-                  No pudimos enviar el formulario.{" "}
+                  {t.errorA}{" "}
                   <button type="button" onClick={() => setStatus("mail")} className="underline underline-offset-4">
-                    Envíalo desde tu correo
+                    {t.errorLink}
                   </button>{" "}
-                  y te respondemos igual.
+                  {t.errorB}
                 </p>
               )}
-              <p className="mt-5 text-[0.9rem] text-ink-3">Usamos tus datos solo para responder este mensaje.</p>
+              <p className="mt-5 text-[0.9rem] text-ink-3">{t.privacy}</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -316,7 +321,7 @@ export function ContactForm() {
             </span>
             <span>
               <span className="block font-semibold text-paper">carpy</span>
-              <span className="block text-[0.85rem] text-paper/60">Así nos llega tu mensaje</span>
+              <span className="block text-[0.85rem] text-paper/60">{t.previewTitle}</span>
             </span>
           </div>
           <motion.div
@@ -325,7 +330,7 @@ export function ContactForm() {
             className="ml-auto mt-5 max-w-[92%] rounded-[20px] rounded-br-md bg-[#d8e5d6] px-4 py-3 text-[0.97rem] leading-[1.5] text-ink shadow-rest"
           >
             <p className="whitespace-pre-line break-words">{body}</p>
-            <p className="mt-1.5 text-right text-[0.75rem] text-ink-3">ahora ✓✓</p>
+            <p className="mt-1.5 text-right text-[0.75rem] text-ink-3">{t.now}</p>
           </motion.div>
         </div>
       </div>

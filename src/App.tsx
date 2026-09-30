@@ -8,21 +8,25 @@ import { Team } from "./components/sections/team/Team";
 import { Faq } from "./components/sections/Faq";
 import { Contact } from "./components/sections/contact/Contact";
 import { BackToTop } from "./components/ui/BackToTop";
+import { LocaleProvider } from "./i18n/context";
+import type { Locale } from "./i18n/locales";
 
-export function App() {
+export function App({ locale }: { locale: Locale }) {
   return (
     <MotionConfig reducedMotion="user">
-      <Navbar />
-      <main id="contenido" className="relative z-10">
-        <Hero />
-        <Services />
-        <Process />
-        <Team />
-        <Faq />
-        <Contact />
-      </main>
-      <Footer />
-      <BackToTop />
+      <LocaleProvider initial={locale}>
+        <Navbar />
+        <main id="contenido" className="relative z-10">
+          <Hero />
+          <Services />
+          <Process />
+          <Team />
+          <Faq />
+          <Contact />
+        </main>
+        <Footer />
+        <BackToTop />
+      </LocaleProvider>
     </MotionConfig>
   );
 }

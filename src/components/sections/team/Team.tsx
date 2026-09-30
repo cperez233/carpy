@@ -6,12 +6,14 @@ import { SplitWords } from "../../ui/SplitWords";
 import { activeTeam } from "../../../data/team";
 import { cn } from "../../../lib/cn";
 import { reveal, staggerChild, staggerParent } from "../../../lib/motion";
+import { useI18n } from "../../../i18n/context";
 
 /**
  * La grilla se adapta a cuantos socios tengan `isActive` en `data/team.ts`:
  * 1 = retrato ancho; 2 = dos columnas; 3 = tres columnas en escritorio.
  */
 export function Team() {
+  const { t } = useI18n();
   const n = activeTeam.length;
   if (n === 0) return null;
   return (
@@ -23,14 +25,13 @@ export function Team() {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
-            <SectionLabel>Equipo</SectionLabel>
+            <SectionLabel>{t.team.label}</SectionLabel>
             <h2 id="equipo-title" className="mt-5 font-display text-[clamp(2.3rem,5vw,4rem)] font-medium leading-[1] tracking-[-0.03em] text-ink">
-              <SplitWords text="Hablas con quien escribe el código." />
+              <SplitWords text={t.team.title} />
             </h2>
           </div>
           <motion.p {...reveal} className="max-w-[30rem] text-[1rem] leading-[1.6] text-ink-3 sm:text-[1.06rem] lg:col-span-5">
-            carpy la formamos tres socios que desarrollan y auditan software. Sin intermediarios ni
-            cuentas que pasan de mano en mano.
+            {t.team.intro}
           </motion.p>
         </div>
 
@@ -55,6 +56,7 @@ export function Team() {
 const tones = ["var(--color-water)", "#ecc9a0", "#c9b89a"];
 
 function Roster() {
+  const { t } = useI18n();
   const row = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
 
@@ -101,7 +103,7 @@ function Roster() {
             key={m.id}
             type="button"
             onClick={() => go(i)}
-            aria-label={`Ver a ${m.name}`}
+            aria-label={t.team.see(m.name)}
             aria-current={index === i}
             className="grid h-11 w-8 place-items-center"
           >

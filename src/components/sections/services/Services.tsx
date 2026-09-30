@@ -8,11 +8,12 @@ import { SectionLabel } from "../../ui/SectionLabel";
 import { Current } from "../../ui/Current";
 import { Tilt } from "../../ui/Tilt";
 import { SplitWords } from "../../ui/SplitWords";
-import { services, type Service } from "../../../data/content";
+import type { Service } from "../../../data/content";
 import { cn } from "../../../lib/cn";
 import { ease, reveal } from "../../../lib/motion";
 import { scrollToId } from "../../../lib/scroll";
 import { track } from "../../../lib/track";
+import { useI18n } from "../../../i18n/context";
 
 /** Evento que preselecciona el tipo de solicitud en el formulario. */
 export const REQUEST_EVENT = "carpy:request";
@@ -41,6 +42,7 @@ interface RowProps {
 }
 
 function Row({ s, open, onToggle }: RowProps) {
+  const { t } = useI18n();
   const panel = `servicio-${s.id}-panel`;
   return (
     <li id={`servicio-${s.id}`} className="border-t border-ink/12 last:border-b">
@@ -87,7 +89,7 @@ function Row({ s, open, onToggle }: RowProps) {
           <ul className="mt-5 max-w-[34rem]">
             {s.includes.map((it, i) => (
               <motion.li
-                key={it}
+                key={i}
                 initial={false}
                 animate={{ opacity: open ? 1 : 0, x: open ? 0 : -10 }}
                 transition={{ duration: 0.5, delay: open ? 0.15 + i * 0.06 : 0, ease }}
@@ -99,7 +101,7 @@ function Row({ s, open, onToggle }: RowProps) {
             ))}
           </ul>
           <p className="mt-5 max-w-[34rem] text-[0.98rem] leading-[1.6] text-ink-3">
-            <span className="font-semibold text-ink">Recibes: </span>
+            <span className="font-semibold text-ink">{t.services.receive}</span>
             {s.deliverable}
           </p>
 
@@ -124,6 +126,8 @@ function Row({ s, open, onToggle }: RowProps) {
 }
 
 export function Services() {
+  const { t } = useI18n();
+  const services = t.services.items;
   // Se puede cerrar todo; la demostracion de escritorio muestra la ultima abierta.
   const [openId, setOpenId] = useState<Service["id"] | null>("software");
   const [lastId, setLastId] = useState<Service["id"]>("software");
@@ -147,13 +151,13 @@ export function Services() {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
-            <SectionLabel>Qué hacemos</SectionLabel>
+            <SectionLabel>{t.services.label}</SectionLabel>
             <h2 id="servicios-title" className="mt-5 font-display text-[clamp(2.3rem,5vw,4rem)] font-medium leading-[1] tracking-[-0.03em] text-ink">
-              <SplitWords text="Si es software, lo resolvemos." />
+              <SplitWords text={t.services.title} />
             </h2>
           </div>
           <motion.p {...reveal} className="max-w-[30rem] text-[1rem] leading-[1.6] text-ink-3 sm:text-[1.06rem] lg:col-span-5">
-            Esto es lo que más nos piden. Si lo tuyo no aparece, escríbenos igual: casi siempre hay una forma.
+            {t.services.intro}
           </motion.p>
         </div>
 
@@ -183,8 +187,8 @@ export function Services() {
                   <CarpyMark className="h-7 w-auto text-ink" cutout="var(--color-paper-2)" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-display text-[1.5rem] font-medium leading-tight tracking-[-0.02em] text-ink">¿Otra cosa?</span>
-                  <span className="mt-0.5 block text-[0.98rem] text-ink-3">Cuéntanos qué te tiene preocupado y lo miramos con calma.</span>
+                  <span className="block font-display text-[1.5rem] font-medium leading-tight tracking-[-0.02em] text-ink">{t.services.otherTitle}</span>
+                  <span className="mt-0.5 block text-[0.98rem] text-ink-3">{t.services.otherBody}</span>
                 </span>
                 <ArrowRight className="h-5 w-5 shrink-0 text-ink transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} aria-hidden />
               </a>

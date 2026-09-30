@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { cn } from "../../../lib/cn";
 import { ease } from "../../../lib/motion";
 import { useLoopInView } from "../../../lib/useLoopInView";
+import { useI18n } from "../../../i18n/context";
 
 /*
  * Demostraciones sobre negocios ficticios, dibujadas con los mismos tonos de
@@ -60,15 +61,17 @@ function Rolling({ value, format }: { value: number; format?: (v: number) => str
   );
 }
 
+/** Stock inicial y minimo de cada producto; los nombres vienen del idioma. */
 const stockRows = [
-  { item: "Tubo PVC 1/2\"", stock: 128, min: 40 },
-  { item: "Cemento gris 50 kg", stock: 42, min: 20 },
-  { item: "Pintura blanca, galón", stock: 23, min: 20 },
-  { item: "Cinta aislante", stock: 310, min: 60 },
+  { stock: 128, min: 40 },
+  { stock: 42, min: 20 },
+  { stock: 23, min: 20 },
+  { stock: 310, min: 60 },
 ];
 
 /** Software: el inventario de una ferreteria que antes vivia en Excel. */
 export function SoftwareVisual() {
+  const t = useI18n().t.visuals.software;
   const { ref, play } = useLoopInView<HTMLDivElement>("0px");
   const [stock, setStock] = useState(stockRows.map((r) => r.stock));
   const [flash, setFlash] = useState<number | null>(null);
@@ -88,52 +91,48 @@ export function SoftwareVisual() {
 
   return (
     <div ref={ref}>
-      <Window title="inventario · ferretería (ejemplo)">
+      <Window title={t.title}>
         <div className="px-4 pb-4 pt-3 sm:px-5">
           <div className="grid grid-cols-[1fr_auto_auto] gap-x-5 border-b border-ink/8 pb-2 text-[0.8rem] font-semibold text-ink-3">
-            <span>Producto</span>
-            <span className="text-right">Stock</span>
-            <span className="w-16 text-right">Estado</span>
+            <span>{t.product}</span>
+            <span className="text-right">{t.stock}</span>
+            <span className="w-16 text-right">{t.status}</span>
           </div>
           <ul>
             {stockRows.map((r, k) => {
               const low = stock[k] <= r.min;
               return (
                 <li
-                  key={r.item}
+                  key={k}
                   className={cn(
                     "grid grid-cols-[1fr_auto_auto] items-center gap-x-5 border-b border-ink/5 py-2.5 text-[0.93rem] transition-colors duration-700",
                     flash === k ? "bg-mandarina/10" : "bg-transparent",
                   )}
                 >
-                  <span className="truncate font-medium text-ink">{r.item}</span>
+                  <span className="truncate font-medium text-ink">{t.rows[k]}</span>
                   <span className="text-right font-semibold text-ink">
                     <Rolling value={stock[k]} />
                   </span>
                   <span className={cn("w-16 text-right text-[0.8rem] font-semibold", low ? "text-mandarina-ink" : "text-ok")}>
-                    {low ? "Pedir" : "Bien"}
+                    {low ? t.low : t.ok}
                   </span>
                 </li>
               );
             })}
           </ul>
-          <p className="mt-3 text-[0.82rem] text-ink-3">Se actualiza con cada venta de la caja y de la tienda en línea.</p>
+          <p className="mt-3 text-[0.82rem] text-ink-3">{t.footer}</p>
         </div>
       </Window>
     </div>
   );
 }
 
-const flow = [
-  { t: "10:02", text: "Pedido #1042 llegó por WhatsApp" },
-  { t: "10:02", text: "Factura FE-2291 enviada a la DIAN" },
-  { t: "10:03", text: "La DIAN aceptó la factura" },
-  { t: "10:03", text: "PDF y XML enviados al cliente" },
-  { t: "10:03", text: "Hoja de ventas actualizada" },
-];
+/** Hora de cada evento; el texto viene del idioma. */
+const flow = ["10:02", "10:02", "10:03", "10:03", "10:03"];
 
 /** Integraciones: un pedido que se factura y se reporta solo. */
 export function IntegrationVisual() {
+  const t = useI18n().t.visuals.integration;
   const { ref, play, reduce } = useLoopInView<HTMLDivElement>("0px");
   const [n, setN] = useState(flow.length);
   const started = useRef(false);
@@ -152,13 +151,13 @@ export function IntegrationVisual() {
 
   return (
     <div ref={ref}>
-      <Window title="registro de eventos · pedidos">
+      <Window title={t.title}>
         <ol className="relative min-h-[17.5rem] px-4 py-4 sm:px-5">
           <span aria-hidden className="absolute bottom-6 left-[1.83rem] top-6 w-px bg-ink/10 sm:left-[2.08rem]" />
           <AnimatePresence initial={false}>
-            {flow.slice(0, shown).map((f, i) => (
+            {flow.slice(0, shown).map((time, i) => (
               <motion.li
-                key={f.text}
+                key={i}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.3 } }}
@@ -176,33 +175,25 @@ export function IntegrationVisual() {
                 >
                   <Check className="h-3.5 w-3.5" strokeWidth={3} aria-hidden />
                 </motion.span>
-                <span className="font-mono text-[0.78rem] text-ink-3">{f.t}</span>
-                <span className="text-[0.93rem] font-medium text-ink">{f.text}</span>
+                <span className="font-mono text-[0.78rem] text-ink-3">{time}</span>
+                <span className="text-[0.93rem] font-medium text-ink">{t.events[i]}</span>
               </motion.li>
             ))}
           </AnimatePresence>
         </ol>
-        <p className="border-t border-ink/8 px-4 py-3 text-[0.82rem] text-ink-3 sm:px-5">Si la DIAN no responde, se reintenta y te avisamos.</p>
+        <p className="border-t border-ink/8 px-4 py-3 text-[0.82rem] text-ink-3 sm:px-5">{t.footer}</p>
       </Window>
     </div>
   );
 }
 
-/** Un hallazgo por area: la auditoria no es solo de seguridad. */
-const findings = [
-  { sev: "Alta", area: "Proceso", title: "Cada pedido se digita dos veces", note: "ventas y bodega llevan hojas distintas" },
-  { sev: "Alta", area: "Seguridad", title: "El panel de administración no pide rol", note: "cualquier usuario ve los clientes" },
-  { sev: "Media", area: "Costos", title: "Servidor sobredimensionado", note: "se paga 3 veces lo que se usa" },
-  { sev: "Media", area: "Código", title: "Pagos sin pruebas automáticas", note: "cada cambio se revisa a mano" },
-];
-
-const sevTone: Record<string, string> = {
-  Alta: "bg-mandarina text-ink",
-  Media: "bg-paper-3 text-ink",
-};
+/** Un hallazgo por area (la auditoria no es solo de seguridad): los dos primeros son de prioridad alta. */
+const highPriority = [true, true, false, false];
 
 /** Auditoria: la primera pagina del informe. */
 export function AuditVisual() {
+  const t = useI18n().t.visuals.audit;
+  const findings = t.findings;
   const { ref, play, reduce } = useLoopInView<HTMLDivElement>("0px");
   const [n, setN] = useState(findings.length);
   const started = useRef(false);
@@ -226,28 +217,28 @@ export function AuditVisual() {
       <div className="relative rounded-[18px] bg-paper-2 p-5 shadow-float ring-1 ring-ink/5 sm:p-6">
         <div className="flex items-start justify-between gap-4 border-b border-ink/10 pb-4">
           <div>
-            <p className="text-[0.8rem] font-semibold text-ink-3">Informe de auditoría (ejemplo)</p>
-            <p className="mt-1 font-display text-[1.35rem] font-medium leading-tight text-ink">Sistema de pedidos</p>
+            <p className="text-[0.8rem] font-semibold text-ink-3">{t.eyebrow}</p>
+            <p className="mt-1 font-display text-[1.35rem] font-medium leading-tight text-ink">{t.name}</p>
           </div>
           <div className="text-right">
             <p className="font-display text-[2rem] font-medium leading-none text-mandarina-ink tabular-nums">
-              {findings.filter((f, i) => i < shown && f.sev === "Alta").length}
+              {highPriority.filter((high, i) => i < shown && high).length}
             </p>
-            <p className="text-[0.78rem] font-semibold text-ink-3">prioridad alta</p>
+            <p className="text-[0.78rem] font-semibold text-ink-3">{t.high}</p>
           </div>
         </div>
         <ul className="mt-2 min-h-[13.5rem]">
           <AnimatePresence initial={false}>
-            {findings.slice(0, shown).map((f) => (
+            {findings.slice(0, shown).map((f, i) => (
               <motion.li
-                key={f.title}
+                key={i}
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.25 } }}
                 transition={{ duration: 0.45, ease }}
                 className="flex items-center gap-3 border-b border-ink/5 py-2.5"
               >
-                <span className={cn("w-[5.2rem] shrink-0 rounded-full py-1 text-center text-[0.74rem] font-bold", sevTone[f.sev])}>{f.area}</span>
+                <span className={cn("w-[5.2rem] shrink-0 rounded-full py-1 text-center text-[0.74rem] font-bold", highPriority[i] ? "bg-mandarina text-ink" : "bg-paper-3 text-ink")}>{f.area}</span>
                 <span className="min-w-0">
                   <span className="block truncate text-[0.9rem] font-semibold text-ink">{f.title}</span>
                   <span className="block truncate text-[0.86rem] text-ink-3">{f.note}</span>
@@ -256,16 +247,17 @@ export function AuditVisual() {
             ))}
           </AnimatePresence>
         </ul>
-        <p className="mt-3 text-[0.82rem] text-ink-3">Cada hallazgo trae su impacto en el negocio y cómo resolverlo.</p>
+        <p className="mt-3 text-[0.82rem] text-ink-3">{t.footer}</p>
       </div>
     </div>
   );
 }
 
+/** Color y dibujo de cada producto; nombre y precio vienen del idioma. */
 const products = [
-  { name: "Pan de masa madre", price: "$12.000", tone: "#ecd6b4", art: "pan" },
-  { name: "Café de Santander", price: "$28.000", tone: "#d9c2a4", art: "cafe" },
-  { name: "Galletas de avena", price: "$9.500", tone: "#e8d2b0", art: "galleta" },
+  { tone: "#ecd6b4", art: "pan" },
+  { tone: "#d9c2a4", art: "cafe" },
+  { tone: "#e8d2b0", art: "galleta" },
 ] as const;
 
 /** Dibujos simples de cada producto. */
@@ -311,6 +303,7 @@ function ProductArt({ art }: { art: (typeof products)[number]["art"] }) {
 
 /** Paginas y tiendas: una tienda pequena que recibe pedidos. */
 export function WebVisual() {
+  const t = useI18n().t.visuals.web;
   const { ref, play } = useLoopInView<HTMLDivElement>("0px");
   const [cart, setCart] = useState(2);
   const [added, setAdded] = useState<number | null>(null);
@@ -329,12 +322,12 @@ export function WebVisual() {
 
   return (
     <div ref={ref}>
-      <Window title="tu-negocio.co (ejemplo)">
+      <Window title={t.title}>
         <div className="px-4 pb-5 pt-4 sm:px-5">
           <div className="flex items-center justify-between">
-            <span className="font-display text-[1.15rem] font-medium text-ink">Panadería</span>
+            <span className="font-display text-[1.15rem] font-medium text-ink">{t.shop}</span>
             <span className="relative inline-flex items-center gap-1.5 rounded-full bg-paper-3 px-3 py-1 text-[0.8rem] font-semibold text-ink">
-              Pedido
+              {t.order}
               <span className="grid h-5 min-w-5 place-items-center rounded-full bg-ink px-1 text-[0.72rem] text-paper-2">
                 <Rolling value={cart} />
               </span>
@@ -342,7 +335,7 @@ export function WebVisual() {
           </div>
           <div className="mt-4 grid grid-cols-3 gap-2.5">
             {products.map((p, k) => (
-              <div key={p.name} className="relative overflow-hidden rounded-2xl bg-paper-3/60 p-2.5">
+              <div key={p.art} className="relative overflow-hidden rounded-2xl bg-paper-3/60 p-2.5">
                 <div className="grid aspect-square place-items-center rounded-xl" style={{ background: p.tone }}>
                   <motion.span
                     animate={added === k ? { scale: [1, 1.14, 1], rotate: [0, -6, 0], y: [0, -4, 0] } : { scale: 1 }}
@@ -352,8 +345,8 @@ export function WebVisual() {
                     <ProductArt art={p.art} />
                   </motion.span>
                 </div>
-                <p className="mt-2 truncate text-[0.78rem] font-semibold text-ink">{p.name}</p>
-                <p className="text-[0.74rem] text-ink-3">{p.price}</p>
+                <p className="mt-2 truncate text-[0.78rem] font-semibold text-ink">{t.products[k]}</p>
+                <p className="text-[0.74rem] text-ink-3">{t.prices[k]}</p>
                 <AnimatePresence>
                   {added === k && (
                     <motion.span
@@ -372,8 +365,8 @@ export function WebVisual() {
             ))}
           </div>
           <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-ink px-4 py-3 text-paper-2">
-            <span className="text-[0.86rem] font-semibold">Pedir por WhatsApp</span>
-            <span className="text-[0.78rem] text-paper/60">PSE · Nequi · tarjeta</span>
+            <span className="text-[0.86rem] font-semibold">{t.cta}</span>
+            <span className="text-[0.78rem] text-paper/60">{t.pay}</span>
           </div>
         </div>
       </Window>
@@ -385,10 +378,10 @@ const weeks = [
   [42, 58, 51, 66, 74, 88, 61],
   [48, 52, 63, 59, 80, 94, 70],
 ];
-const days = ["L", "M", "M", "J", "V", "S", "D"];
 
 /** Datos: las ventas de la semana en un tablero que se actualiza solo. */
 export function DataVisual() {
+  const t = useI18n().t.visuals.data;
   const { ref, play } = useLoopInView<HTMLDivElement>("0px");
   const [w, setW] = useState(0);
   useEffect(() => {
@@ -398,14 +391,14 @@ export function DataVisual() {
   }, [play]);
   const data = weeks[w];
   const total = data.reduce((a, b) => a + b, 0);
-  const money = (v: number) => (v * 10000).toLocaleString("es-CO");
+  const money = (v: number) => (v * 10000).toLocaleString(t.numberLocale);
   const best = data.indexOf(Math.max(...data));
 
   return (
     <div ref={ref}>
-      <Window title="tablero · ventas (ejemplo)">
+      <Window title={t.title}>
         <div className="px-4 pb-5 pt-4 sm:px-5">
-          <p className="text-[0.8rem] font-semibold text-ink-3">Ventas de la semana</p>
+          <p className="text-[0.8rem] font-semibold text-ink-3">{t.label}</p>
           <p className="mt-1 flex items-baseline gap-2 font-display text-[2rem] font-medium leading-none text-ink">
             <span>
               $<Rolling value={total} format={money} />
@@ -421,25 +414,20 @@ export function DataVisual() {
                   transition={{ type: "spring", stiffness: 120, damping: 18, delay: i * 0.05 }}
                   className={cn("w-full rounded-b-md rounded-t-xl transition-colors duration-500", i === best ? "bg-mandarina" : "bg-water")}
                 />
-                <span className="text-[0.74rem] font-semibold text-ink-3">{days[i]}</span>
+                <span className="text-[0.74rem] font-semibold text-ink-3">{t.days[i]}</span>
               </div>
             ))}
           </div>
-          <p className="mt-3 text-[0.82rem] text-ink-3">Llega a tu correo cada lunes a las 7:00 a. m.</p>
+          <p className="mt-3 text-[0.82rem] text-ink-3">{t.footer}</p>
         </div>
       </Window>
     </div>
   );
 }
 
-const checks = [
-  { label: "Página web", ok: "En línea" },
-  { label: "Copias de seguridad", ok: "Hoy, 3:00 a. m." },
-  { label: "Certificado de seguridad", ok: "Vence en 64 días" },
-];
-
 /** Soporte: el monitor que avisa antes que los clientes. */
 export function SupportVisual() {
+  const t = useI18n().t.visuals.support;
   const { ref, play } = useLoopInView<HTMLDivElement>("0px");
   const [phase, setPhase] = useState(0); // 0 todo bien, 1 lenta, 2 resuelto
   useEffect(() => {
@@ -451,7 +439,7 @@ export function SupportVisual() {
 
   return (
     <div ref={ref} className={cn(!play && "is-paused")}>
-      <Window title="monitoreo · tu-negocio.co (ejemplo)">
+      <Window title={t.title}>
         <div className="px-4 pb-5 pt-4 sm:px-5">
           {/* Pulso: la linea corre sola y se vuelve naranja si algo falla. */}
           <div className="relative h-16 overflow-hidden rounded-2xl bg-paper-3/60">
@@ -470,11 +458,11 @@ export function SupportVisual() {
             </svg>
           </div>
           <ul className="mt-3">
-            {checks.map((c, i) => (
-              <li key={c.label} className="flex items-center justify-between gap-4 border-b border-ink/5 py-2.5 text-[0.9rem]">
+            {t.checks.map((c, i) => (
+              <li key={i} className="flex items-center justify-between gap-4 border-b border-ink/5 py-2.5 text-[0.9rem]">
                 <span className="font-medium text-ink">{c.label}</span>
                 <span className={cn("font-semibold transition-colors duration-300", i === 0 && down ? "text-mandarina-ink" : "text-ok")}>
-                  {i === 0 && down ? "Lenta, revisando…" : c.ok}
+                  {i === 0 && down ? t.slow : c.ok}
                 </span>
               </li>
             ))}
@@ -490,7 +478,7 @@ export function SupportVisual() {
                   transition={{ duration: 0.35, ease }}
                   className="rounded-xl bg-paper-3/70 px-3 py-2.5 text-[0.84rem] font-medium text-ink"
                 >
-                  {phase === 1 ? "Te escribimos: la página está lenta, ya estamos en eso." : "Resuelto en 6 minutos. Nadie lo notó."}
+                  {phase === 1 ? t.alertSlow : t.alertFixed}
                 </motion.p>
               )}
             </AnimatePresence>

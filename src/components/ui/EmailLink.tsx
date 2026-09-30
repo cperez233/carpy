@@ -4,6 +4,7 @@ import { composeLinks, mailtoHref, site } from "../../data/site";
 import { useFinePointer } from "../../lib/pointer";
 import { track } from "../../lib/track";
 import { cn } from "../../lib/cn";
+import { useI18n } from "../../i18n/context";
 
 /**
  * Enlace al correo. En el celular abre la app de correo instalada (mailto).
@@ -11,11 +12,12 @@ import { cn } from "../../lib/cn";
  * asi que mostramos un menu: Gmail, Outlook web, app de correo o copiar.
  */
 export function EmailLink({ className, location }: { className?: string; location: string }) {
+  const { t } = useI18n();
   const fine = useFinePointer();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
-  const links = composeLinks("Contacto desde carpy.tech", "");
+  const links = composeLinks(t.email.subject, "");
 
   useEffect(() => {
     if (!open) return;
@@ -76,7 +78,7 @@ export function EmailLink({ className, location }: { className?: string; locatio
               [
                 ["gmail", "Gmail"],
                 ["outlook", "Outlook"],
-                ["app", "App de correo"],
+                ["app", t.email.app],
               ] as const
             ).map(([k, label]) => (
               <a
@@ -95,7 +97,7 @@ export function EmailLink({ className, location }: { className?: string; locatio
               </a>
             ))}
             <button type="button" role="menuitem" onClick={copy} className={cn(item, "text-ink-2")}>
-              {copied ? "Copiado ✓" : "Copiar correo"}
+              {copied ? t.email.copied : t.email.copy}
             </button>
           </motion.span>
         )}

@@ -4,22 +4,18 @@ import { Check } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { useLoopInView } from "../../lib/useLoopInView";
 import { useLayer, usePointerParallax } from "../../lib/pointer";
+import { useI18n } from "../../i18n/context";
 
 /**
  * Los problemas bajan por el rio, pasan junto al capibara y salen resueltos.
  * Todo el movimiento es CSS: arranca con el primer pintado y se pausa fuera
  * de pantalla. Con reduced-motion se ven dos etiquetas ya resueltas.
  */
-const issues = [
-  { before: "Error 500 en el portal", after: "Portal en línea" },
-  { before: "Factura rechazada por la DIAN", after: "Factura validada" },
-  { before: "Clave de AWS en el repositorio", after: "Clave rotada" },
-  { before: "Inventario en tres Excel", after: "Inventario sincronizado" },
-];
-
 const DUR = 28;
 
 export function CapyScene({ className }: { className?: string }) {
+  const { t } = useI18n();
+  const issues = t.scene.issues;
   const { ref, play } = useLoopInView<HTMLDivElement>("0px");
   // Capas que siguen al puntero: lo lejano casi no se mueve, lo cercano si.
   const { x, y, handlers } = usePointerParallax();
@@ -39,7 +35,7 @@ export function CapyScene({ className }: { className?: string }) {
         className,
       )}
     >
-      <svg viewBox="0 0 520 380" className="absolute inset-0 h-full w-full" role="img" aria-label="Un capibara con una mandarina en la cabeza, tranquilo en el río">
+      <svg viewBox="0 0 520 380" className="absolute inset-0 h-full w-full" role="img" aria-label={t.scene.label}>
         {/* Sol de la tarde. */}
         <motion.g style={{ x: sunX, y: sunY }}>
           <circle cx="392" cy="92" r="58" fill="#ecc9a0" />
@@ -201,7 +197,7 @@ export function CapyScene({ className }: { className?: string }) {
           } as CSSProperties;
           return (
             <div
-              key={it.before}
+              key={i}
               style={style}
               className={cn("drift-lane anim-drift absolute inset-x-0", i % 2 === 0 ? "top-[12%]" : "top-[52%]")}
             >

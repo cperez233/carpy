@@ -1,6 +1,6 @@
 /**
  * Prerender de la landing: escribe el HTML completo (contenido, enlaces y
- * JSON-LD) en dist/index.html para que buscadores, crawlers de IA y
+ * JSON-LD) de cada idioma, dist/index.html (es) y dist/en.html (en), para que buscadores, crawlers de IA y
  * previews sociales lo lean sin ejecutar JavaScript. Tambien genera
  * robots.txt, sitemap.xml, llms.txt y 404.html desde los mismos datos.
  */
@@ -11,12 +11,19 @@ import path from "node:path";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 const ssrEntry = pathToFileURL(path.join(root, "dist-ssr", "entry-server.js")).href;
-const { render, jsonLd, site, services, faqs, activeTeam } = await import(ssrEntry);
+const { render, buildJsonLd, buildHead, site, activeTeam, dicts, locales, localeUrl } = await import(ssrEntry);
 
+// Una pagina por idioma: dist/index.html (es, en `/`) y dist/en.html (en `/en`).
 const template = await readFile(path.join(dist, "index.html"), "utf8");
-const ldScript = `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\u003c")}</script>`;
-const html = template.replace("<!--json-ld-->", ldScript).replace("<!--app-html-->", render());
-await writeFile(path.join(dist, "index.html"), html);
+for (const locale of locales) {
+  const ld = `<script type="application/ld+json">${JSON.stringify(buildJsonLd(locale)).replace(/</g, "\\u003c")}</script>`;
+  const html = template
+    .replace('<html lang="es-CO">', `<html lang="${dicts[locale].meta.htmlLang}">`)
+    .replace("<!--head-->", buildHead(locale))
+    .replace("<!--json-ld-->", ld)
+    .replace("<!--app-html-->", render(locale));
+  await writeFile(path.join(dist, locale === "es" ? "index.html" : `${locale}.html`), html);
+}
 
 await writeFile(
   path.join(dist, "robots.txt"),
@@ -35,31 +42,42 @@ Sitemap: ${site.url}/sitemap.xml
 `,
 );
 
+const alternates = [...locales.map((l) => [l, localeUrl(l)]), ["x-default", localeUrl("es")]]
+  .map(([l, href]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${href}" />`)
+  .join("\n");
 await writeFile(
   path.join(dist, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${site.url}/</loc>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${locales
+  .map(
+    (l) => `  <url>
+    <loc>${localeUrl(l)}</loc>
+${alternates}
     <lastmod>${site.lastModified}</lastmod>
-  </url>
+  </url>`,
+  )
+  .join("\n")}
 </urlset>
 `,
 );
 
+const es = dicts.es;
 const llms = [
   `# ${site.name}`,
   ``,
-  `> ${site.tagline} en ${site.city}, ${site.country}. Software a medida, integraciones y automatización, y auditoría de software, procesos de negocio y seguridad para empresas y entidades públicas.`,
+  `> ${es.tagline} en ${site.city}, ${site.country}. Software a medida, integraciones y automatización, y auditoría de software, procesos de negocio y seguridad para empresas y entidades públicas.`,
+  ``,
+  `English version: ${localeUrl("en")}`,
   ``,
   `## Servicios`,
-  ...services.map((s) => `- [${s.title}](${site.url}/#servicio-${s.id}): ${s.summary} Recibes: ${s.deliverable}`),
+  ...es.services.items.map((s) => `- [${s.title}](${site.url}/#servicio-${s.id}): ${s.summary} ${es.services.receive}${s.deliverable}`),
   ``,
   `## Equipo`,
-  ...activeTeam.map((m) => `- ${m.name}, ${m.role}${m.portfolio ? `: ${m.portfolio.href}` : ""}`),
+  ...activeTeam.map((m) => `- ${m.name}, ${m.copy.es.role}${m.portfolio ? `: ${m.portfolio.href}` : ""}`),
   ``,
   `## Preguntas frecuentes`,
-  ...faqs.map((f) => `- ${f.q} ${f.a}`),
+  ...es.faq.items.map((f) => `- ${f.q} ${f.a}`),
   ``,
   `## Contacto`,
   `- Correo: ${site.email}`,
@@ -88,7 +106,11 @@ ${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ""}
 <p class="text-[1rem] font-semibold text-mandarina-ink">Error 404</p>
 <h1 class="mt-4 font-display text-[clamp(2.5rem,6vw,4.8rem)] font-medium leading-[0.98] tracking-[-0.035em] text-ink">Esta página se fue río abajo.</h1>
 <p class="mt-5 text-[1.06rem] leading-[1.65] text-ink-3">Puede que el enlace esté mal escrito o que la página se haya movido.</p>
-<a href="/" class="mt-8 inline-flex min-h-12 w-fit items-center rounded-full bg-ink px-6 font-semibold text-paper-2">Volver al inicio de carpy</a>
+<p lang="en" class="mt-2 text-[1rem] leading-[1.6] text-ink-3">This page drifted downstream. The link may be misspelled, or the page may have moved.</p>
+<div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+<a href="/" class="inline-flex min-h-12 w-fit items-center rounded-full bg-ink px-6 font-semibold text-paper-2">Volver al inicio de carpy</a>
+<a href="/en" hreflang="en" lang="en" class="inline-flex min-h-12 items-center font-semibold text-ink underline decoration-mandarina decoration-2 underline-offset-4">Back to carpy in English</a>
+</div>
 </main>
 </body>
 </html>
@@ -96,4 +118,4 @@ ${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ""}
 );
 
 await rm(path.join(root, "dist-ssr"), { recursive: true, force: true });
-console.log("Prerender listo: index.html, 404.html, robots.txt, sitemap.xml, llms.txt");
+console.log("Prerender listo: index.html, en.html, 404.html, robots.txt, sitemap.xml, llms.txt");

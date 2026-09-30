@@ -1,6 +1,7 @@
 /**
  * Datos de la empresa: una sola copia. El JSON-LD, el sitemap, robots.txt,
- * llms.txt y los enlaces de contacto salen de aqui.
+ * llms.txt y los enlaces de contacto salen de aqui. Los textos por idioma
+ * estan en `src/i18n/`.
  *
  * Los valores marcados con [COMPLETAR] son temporales y deben cambiarse
  * antes de publicar.
@@ -10,12 +11,10 @@ export interface SiteConfig {
   name: string;
   /** Dominio de produccion, sin barra final. */
   url: string;
-  tagline: string;
   city: string;
   region: string;
   country: string;
   countryCode: string;
-  locale: string;
   /**
    * Correo que recibe las solicitudes.
    */
@@ -46,12 +45,10 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   name: "carpy",
   url: "https://carpy.tech",
-  tagline: "Software, páginas, integraciones, datos, auditoría y soporte",
   city: "Bucaramanga",
   region: "Santander",
   country: "Colombia",
   countryCode: "CO",
-  locale: "es-CO",
   email: "carpyenterprise@gmail.com",
   whatsapp: "+573334337931",
   bookingUrl: null,

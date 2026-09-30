@@ -6,6 +6,7 @@ import { cn } from "../../../lib/cn";
 import { ease } from "../../../lib/motion";
 import { track } from "../../../lib/track";
 import { Tilt } from "../../ui/Tilt";
+import { useI18n } from "../../../i18n/context";
 
 interface TeamCardProps {
   member: TeamMember;
@@ -35,6 +36,8 @@ function Initials({ name }: { name: string }) {
  * las fichas tienen la misma estructura y los mismos altos de texto.
  */
 export function TeamCard({ member, layout = "column", variants, seal = false, tone = "var(--color-water)", className }: TeamCardProps) {
+  const { locale, t } = useI18n();
+  const copy = member.copy[locale];
   const wide = layout === "wide";
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -46,7 +49,7 @@ export function TeamCard({ member, layout = "column", variants, seal = false, to
   const seen = useInView(wrap, { once: true, margin: "0px 0px -5% 0px" });
 
   const links = [
-    ...(member.portfolio ? [{ label: "Portafolio", href: member.portfolio.href, kind: "portafolio" }] : []),
+    ...(member.portfolio ? [{ label: t.team.portfolio, href: member.portfolio.href, kind: "portafolio" }] : []),
     ...member.links.map((l) => ({ ...l, kind: l.label.toLowerCase() })),
   ];
 
@@ -78,7 +81,7 @@ export function TeamCard({ member, layout = "column", variants, seal = false, to
             {member.photo ? (
               <motion.img
                 src={member.photo.src}
-                alt={member.photo.alt}
+                alt={copy.alt}
                 width={member.photo.width}
                 height={member.photo.height}
                 loading="lazy"
@@ -104,7 +107,10 @@ export function TeamCard({ member, layout = "column", variants, seal = false, to
                     <path id={`sello-${member.id}`} d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0" />
                   </defs>
                   <text className="fill-ink font-sans text-[11.5px] font-semibold tracking-[0.16em]">
-                    <textPath href={`#sello-${member.id}`}>EL CAPIBARA NO SE ESTRESA · </textPath>
+                    {/* textLength reparte la frase en toda la vuelta, sea cual sea el idioma. */}
+                    <textPath href={`#sello-${member.id}`} textLength={274} lengthAdjust="spacing">
+                      {t.team.seal}
+                    </textPath>
                   </text>
                 </motion.svg>
                 <svg viewBox="0 0 20 20" className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2">
@@ -124,19 +130,19 @@ export function TeamCard({ member, layout = "column", variants, seal = false, to
           wide && "md:col-span-7 md:mx-0 md:mt-0",
         )}
       >
-        <p className="text-[0.85rem] font-semibold text-mandarina-ink">{member.specialty}</p>
+        <p className="text-[0.85rem] font-semibold text-mandarina-ink">{copy.specialty}</p>
         <h3 id={`${member.id}-name`} className="mt-1.5 font-display text-[1.9rem] font-medium leading-[1.05] tracking-[-0.03em] text-ink lg:text-[2.05rem]">
           {member.name}
         </h3>
-        <p className="mt-1 truncate text-[0.98rem] font-medium text-ink-3">{member.role}</p>
+        <p className="mt-1 truncate text-[0.98rem] font-medium text-ink-3">{copy.role}</p>
         {/* Mismo alto para la bio en las tres fichas. */}
-        <p className="mt-4 min-h-[4.8em] text-[0.98rem] leading-[1.6] text-ink-2">{member.bio}</p>
+        <p className="mt-4 min-h-[4.8em] text-[0.98rem] leading-[1.6] text-ink-2">{copy.bio}</p>
 
-        {member.focus.length > 0 && (
+        {copy.focus.length > 0 && (
           <ul className="mt-4 hidden sm:block">
-            {member.focus.slice(0, 3).map((f, i) => (
+            {copy.focus.slice(0, 3).map((f, i) => (
               <motion.li
-                key={f}
+                key={i}
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -150,7 +156,7 @@ export function TeamCard({ member, layout = "column", variants, seal = false, to
           </ul>
         )}
         {member.stack.length > 0 && (
-          <ul className="mt-4 hidden flex-wrap gap-1.5 sm:flex" aria-label="Tecnologías">
+          <ul className="mt-4 hidden flex-wrap gap-1.5 sm:flex" aria-label={t.team.stack}>
             {member.stack.slice(0, 4).map((t) => (
               <li key={t} className="rounded-full bg-paper-3 px-2.5 py-1 text-[0.8rem] font-medium text-ink-2">
                 {t}
@@ -169,7 +175,7 @@ export function TeamCard({ member, layout = "column", variants, seal = false, to
                   href={l.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`${l.label} de ${member.name} (abre en otra pestaña)`}
+                  aria-label={t.a11y.profileLink(l.label, member.name)}
                   onClick={() => track(`${l.kind}_click`, { member: member.id })}
                   className={cn(
                     "group/l inline-flex h-11 items-center justify-center rounded-full text-ink ring-1 ring-ink/15 transition-[background-color,color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-paper-2 hover:ring-ink active:scale-[0.95]",

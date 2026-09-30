@@ -3,11 +3,12 @@ import { motion } from "framer-motion";
 import { SectionLabel } from "../ui/SectionLabel";
 import { MandarinaToggle } from "../ui/MandarinaToggle";
 import { SplitWords } from "../ui/SplitWords";
-import { faqs, type Faq as FaqItem } from "../../data/content";
+import type { Faq as FaqItem } from "../../data/content";
 import { whatsappHref } from "../../data/site";
 import { cn } from "../../lib/cn";
 import { ease, staggerChild, staggerParent } from "../../lib/motion";
 import { track } from "../../lib/track";
+import { useI18n } from "../../i18n/context";
 
 function Item({ f, i, open, onToggle }: { f: FaqItem; i: number; open: boolean; onToggle: () => void }) {
   const id = `faq-${i}`;
@@ -56,20 +57,21 @@ function Item({ f, i, open, onToggle }: { f: FaqItem; i: number; open: boolean; 
 }
 
 export function Faq() {
+  const { t } = useI18n();
   const [open, setOpen] = useState<number | null>(0);
-  const wa = whatsappHref("Hola, tengo una pregunta para carpy.");
+  const wa = whatsappHref(t.whatsapp.question);
   return (
     <section id="preguntas" aria-labelledby="preguntas-title" className="relative bg-paper pb-20 pt-10 sm:py-20 lg:py-28">
       <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-6 px-4 sm:gap-12 sm:px-6 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
-            <SectionLabel>Preguntas</SectionLabel>
+            <SectionLabel>{t.faq.label}</SectionLabel>
             <h2 id="preguntas-title" className="mt-5 font-display text-[clamp(2.3rem,5vw,3.6rem)] font-medium leading-[1] tracking-[-0.03em] text-ink">
-              <SplitWords text="Antes de escribirnos" />
+              <SplitWords text={t.faq.title} />
             </h2>
             {wa && (
               <p className="mt-6 hidden max-w-[22rem] text-[1.03rem] leading-[1.6] text-ink-3 lg:block">
-                ¿No está tu pregunta?{" "}
+                {t.faq.notHere}{" "}
                 <a
                   href={wa}
                   target="_blank"
@@ -77,7 +79,7 @@ export function Faq() {
                   onClick={() => track("whatsapp_click", { location: "faq" })}
                   className="font-semibold text-ink underline decoration-mandarina decoration-2 underline-offset-4"
                 >
-                  Pregúntanos por WhatsApp
+                  {t.faq.askWhatsapp}
                 </a>
                 .
               </p>
@@ -92,8 +94,8 @@ export function Faq() {
           viewport={{ once: true, margin: "-60px" }}
           className="lg:col-span-8"
         >
-          {faqs.map((f, i) => (
-            <Item key={f.q} f={f} i={i} open={open === i} onToggle={() => setOpen((v) => (v === i ? null : i))} />
+          {t.faq.items.map((f, i) => (
+            <Item key={i} f={f} i={i} open={open === i} onToggle={() => setOpen((v) => (v === i ? null : i))} />
           ))}
         </motion.ul>
       </div>

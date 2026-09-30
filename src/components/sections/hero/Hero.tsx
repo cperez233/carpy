@@ -7,8 +7,10 @@ import { SplitWords } from "../../ui/SplitWords";
 import { bookingHref, bookingIsExternal, onBookingClick } from "../../../lib/booking";
 import { handleAnchorClick } from "../../../lib/scroll";
 import { ease } from "../../../lib/motion";
+import { useI18n } from "../../../i18n/context";
 
 export function Hero() {
+  const { t } = useI18n();
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -38,17 +40,17 @@ export function Hero() {
                 transition={{ duration: 0.8, delay: 0.05, ease }}
                 className="mb-4 block font-sans text-[1rem] font-semibold leading-snug tracking-normal text-mandarina-ink sm:mb-5 sm:text-[1.05rem]"
               >
-                Software a medida, páginas, integraciones y auditoría
+                {t.hero.kicker}
               </motion.span>
               <span className="block">
-                <SplitWords trigger="mount" text="El capibara" delay={0.1} />
+                <SplitWords trigger="mount" text={t.hero.line1} delay={0.1} />
               </span>
               <span className="block">
-                <SplitWords trigger="mount" text="no se estresa." delay={0.22} />
+                <SplitWords trigger="mount" text={t.hero.line2} delay={0.22} />
               </span>
               {/* Remate en gris: la promesa. */}
               <span className="mt-3 block text-[0.5em] leading-[1.1] tracking-[-0.02em] text-ink/45">
-                <SplitWords trigger="mount" text="Tu software tampoco." delay={0.42} />
+                <SplitWords trigger="mount" text={t.hero.promise} delay={0.42} />
               </span>
             </h1>
             <motion.p
@@ -57,7 +59,7 @@ export function Hero() {
               transition={{ duration: 0.9, delay: 0.55, ease }}
               className="mt-6 max-w-[30rem] text-[1.15rem] font-medium sm:mt-8 leading-[1.5] text-ink-2 sm:text-[1.3rem]"
             >
-              Resolvemos lo que tu empresa necesite en software, sin afán y de buena manera.
+              {t.hero.lead}
             </motion.p>
             <motion.p
               initial={{ opacity: 0, y: 16 }}
@@ -65,8 +67,7 @@ export function Hero() {
               transition={{ duration: 0.9, delay: 0.68, ease }}
               className="mt-5 hidden max-w-[30rem] text-[1.03rem] leading-[1.7] text-ink-3 sm:block"
             >
-              Sistemas a medida, páginas y tiendas, integraciones con lo que ya usas, tableros de datos, auditorías y
-              soporte. Para que los problemas se resuelvan con calma y no un viernes en la noche.
+              {t.hero.body}
             </motion.p>
 
             <motion.div
@@ -77,11 +78,11 @@ export function Hero() {
             >
               <Magnetic>
                 <ButtonLink href={bookingHref} external={bookingIsExternal} onClick={(e) => onBookingClick(e, "hero")}>
-                  Cuéntanos tu proyecto
+                  {t.hero.ctaPrimary}
                 </ButtonLink>
               </Magnetic>
               <ButtonLink href="#servicios" variant="quiet" arrow={false} onClick={(e) => handleAnchorClick(e, "servicios")}>
-                Ver qué hacemos
+                {t.hero.ctaSecondary}
               </ButtonLink>
             </motion.div>
           </div>
@@ -102,7 +103,7 @@ export function Hero() {
                 className="relative z-10 -mt-6 ml-5 inline-flex max-w-[calc(100%-2.5rem)] items-center gap-2.5 rounded-full bg-paper-2 px-4 py-2.5 text-[0.9rem] font-medium text-ink-2 shadow-raised sm:ml-8 sm:text-[0.95rem]"
               >
                 <span aria-hidden className="h-2.5 w-2.5 shrink-0 rounded-full bg-mandarina" />
-                Los problemas bajan por el río. Aquí salen resueltos.
+                {t.hero.caption}
               </motion.p>
             </motion.div>
           </motion.div>

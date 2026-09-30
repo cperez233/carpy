@@ -6,9 +6,11 @@ import { whatsappHref } from "../../../data/site";
 import { EmailLink } from "../../ui/EmailLink";
 import { reveal } from "../../../lib/motion";
 import { track } from "../../../lib/track";
+import { useI18n } from "../../../i18n/context";
 
 export function Contact() {
-  const wa = whatsappHref("Hola, quiero hablar con carpy sobre un proyecto.");
+  const { t } = useI18n();
+  const wa = whatsappHref(t.whatsapp.project);
   return (
     <section
       id="contacto"
@@ -18,14 +20,14 @@ export function Contact() {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
-            <SectionLabel>Contacto</SectionLabel>
+            <SectionLabel>{t.contact.label}</SectionLabel>
             <h2 id="contacto-title" className="mt-5 font-display text-[clamp(2.5rem,6vw,4.8rem)] font-medium leading-[0.98] tracking-[-0.035em] text-ink">
-              <SplitWords text="Cuéntanos qué necesitas." />
+              <SplitWords text={t.contact.title} />
             </h2>
           </div>
           <motion.div {...reveal} className="space-y-1 text-[1.03rem] text-ink-3 lg:col-span-5 lg:justify-self-end lg:text-right">
             <p>
-              Escríbenos a{" "}
+              {t.contact.writeTo}{" "}
               <EmailLink
                 location="contacto"
                 className="font-semibold text-ink underline decoration-ink/20 decoration-2 underline-offset-4 transition-colors hover:decoration-mandarina"
@@ -33,7 +35,7 @@ export function Contact() {
             </p>
             {wa && (
               <p>
-                o por{" "}
+                {t.contact.orBy}{" "}
                 <a
                   href={wa}
                   target="_blank"
@@ -43,7 +45,7 @@ export function Contact() {
                 >
                   WhatsApp
                 </a>
-                . Respondemos en menos de un día hábil.
+                {t.contact.reply}
               </p>
             )}
           </motion.div>

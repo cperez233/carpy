@@ -2,9 +2,11 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { CarpyMark, Logo } from "../brand/CarpyMark";
 import { Magnetic } from "../ui/Magnetic";
-import { navItems } from "../../data/content";
 import { whatsappHref } from "../../data/site";
 import { EmailLink } from "../ui/EmailLink";
+import { LanguageToggle } from "../ui/LanguageToggle";
+import { useI18n } from "../../i18n/context";
+import { localePath } from "../../i18n/locales";
 import { handleAnchorClick, scrollToId } from "../../lib/scroll";
 import { bookingHref, bookingIsExternal, onBookingClick } from "../../lib/booking";
 import { cn } from "../../lib/cn";
@@ -15,6 +17,8 @@ import { ease, layoutSpring } from "../../lib/motion";
  * flotante y se esconde mientras lees hacia abajo; reaparece al subir.
  */
 export function Navbar() {
+  const { locale, t } = useI18n();
+  const navItems = t.nav.items;
   const { scrollY } = useScroll();
   const [compact, setCompact] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -48,7 +52,7 @@ export function Navbar() {
       io.disconnect();
       ioTop.disconnect();
     };
-  }, []);
+  }, [navItems]);
 
   useEffect(() => {
     if (!open) return;
@@ -74,7 +78,7 @@ export function Navbar() {
     window.setTimeout(() => scrollToId(id, id === "contacto"), 380);
   }
 
-  const wa = whatsappHref("Hola, quiero hablar con carpy sobre un proyecto.");
+  const wa = whatsappHref(t.whatsapp.project);
 
   return (
     <>
@@ -82,7 +86,7 @@ export function Navbar() {
         href="#contenido"
         className="fixed left-4 top-3 z-[70] -translate-y-20 rounded-full bg-ink px-4 py-2 font-semibold text-paper focus:translate-y-0"
       >
-        Saltar al contenido
+        {t.a11y.skip}
       </a>
       <motion.header
         initial={{ y: -30, opacity: 0 }}
@@ -97,19 +101,19 @@ export function Navbar() {
           )}
         >
           <a
-            href="/"
+            href={localePath(locale)}
             onClick={(e) => {
               if (e.metaKey || e.ctrlKey) return;
               e.preventDefault();
               scrollToId("inicio");
             }}
             className="group rounded-full px-1 py-2 text-ink"
-            aria-label="carpy, volver al inicio"
+            aria-label={t.a11y.home}
           >
             <Logo cutout={compact ? "var(--color-paper-2)" : "var(--color-paper)"} />
           </a>
 
-          <nav aria-label="Principal" className="hidden lg:block">
+          <nav aria-label={t.a11y.mainNav} className="hidden lg:block">
             <ul className="flex items-center gap-1">
               {navItems.map((item) => (
                 <li key={item.id}>
@@ -142,6 +146,10 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {/* En telefono el selector vive en el menu, para no apretar la barra. */}
+            <div className="hidden sm:block">
+              <LanguageToggle />
+            </div>
             <Magnetic strength={0.2}>
             <a
               href={bookingHref}
@@ -149,12 +157,12 @@ export function Navbar() {
               target={bookingIsExternal ? "_blank" : undefined}
               rel={bookingIsExternal ? "noopener noreferrer" : undefined}
               className={cn(
-                "group relative isolate inline-flex min-h-11 items-center overflow-hidden rounded-full px-5 text-[0.95rem] font-semibold transition-[transform,color] duration-300 active:scale-[0.96]",
+                "group relative isolate inline-flex min-h-11 items-center overflow-hidden whitespace-nowrap rounded-full px-5 text-[0.95rem] font-semibold transition-[transform,color] duration-300 active:scale-[0.96]",
                 active === "contacto" ? "bg-mandarina text-ink" : "bg-ink text-paper-2 hover:text-ink",
               )}
             >
               <span aria-hidden className="absolute inset-0 -z-10 translate-y-full bg-mandarina transition-transform duration-500 ease-[var(--ease-calm)] group-hover:translate-y-0" />
-              Escríbenos
+              {t.nav.cta}
             </a>
             </Magnetic>
             <button
@@ -169,7 +177,7 @@ export function Navbar() {
                 <span className="h-[2px] w-full rounded-full bg-current" />
                 <span className="h-[2px] w-3/5 rounded-full bg-current" />
               </span>
-              Menú
+              {t.nav.menu}
             </button>
           </div>
         </div>
@@ -181,7 +189,7 @@ export function Navbar() {
             id="menu-movil"
             role="dialog"
             aria-modal="true"
-            aria-label="Menú"
+            aria-label={t.nav.menu}
             initial={{ clipPath: "circle(0% at 92% 4%)" }}
             animate={{ clipPath: "circle(150% at 92% 4%)" }}
             exit={{ clipPath: "circle(0% at 92% 4%)" }}
@@ -198,12 +206,12 @@ export function Navbar() {
                 onClick={closeMenu}
                 className="min-h-11 rounded-full px-4 font-semibold text-paper ring-1 ring-paper/25 transition-colors hover:bg-paper/10 active:scale-[0.96]"
               >
-                Cerrar
+                {t.nav.close}
               </button>
             </div>
-            <nav aria-label="Menú móvil" className="flex flex-1 flex-col justify-center px-6 sm:px-10">
+            <nav aria-label={t.a11y.mobileNav} className="flex flex-1 flex-col justify-center px-6 sm:px-10">
               <ul>
-                {[...navItems, { id: "contacto", label: "Escríbenos" }].map((item, i) => (
+                {[...navItems, { id: "contacto", label: t.nav.cta }].map((item, i) => (
                   <li key={item.id} className="overflow-hidden">
                     <motion.a
                       ref={i === 0 ? firstLink : undefined}
@@ -229,13 +237,14 @@ export function Navbar() {
               transition={{ delay: 0.6, duration: 0.5 }}
               className="border-t border-paper/15 px-6 py-6 text-[1rem] text-paper/70 sm:px-10"
             >
-              <div className="flex flex-wrap gap-x-6 gap-y-1">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
                 <EmailLink location="menu" className="inline-flex min-h-11 items-center font-semibold text-paper" />
                 {wa && (
                   <a href={wa} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center font-semibold text-paper">
                     WhatsApp
                   </a>
                 )}
+                <LanguageToggle onDark id="lang-menu" className="ml-auto" />
               </div>
             </motion.div>
           </motion.div>

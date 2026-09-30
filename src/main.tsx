@@ -4,11 +4,14 @@ import "@fontsource-variable/fraunces/full.css";
 import "@fontsource-variable/instrument-sans";
 import "./index.css";
 import { App } from "./App";
+import { localeFromPath } from "./i18n/locales";
 
 const root = document.getElementById("root")!;
+// Cada idioma tiene su propio HTML prerenderizado: `/` en espanol, `/en` en ingles.
+const locale = localeFromPath(window.location.pathname);
 const app = (
   <StrictMode>
-    <App />
+    <App locale={locale} />
   </StrictMode>
 );
 

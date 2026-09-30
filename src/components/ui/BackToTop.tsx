@@ -2,12 +2,14 @@ import { useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from "framer-motion";
 import { CarpyMark } from "../brand/CarpyMark";
 import { scrollToId } from "../../lib/scroll";
+import { useI18n } from "../../i18n/context";
 
 /**
  * El capibara flota en la esquina despues del hero. El anillo muestra cuanto
  * llevas de la pagina; al tocarlo vuelve al inicio.
  */
 export function BackToTop() {
+  const { t } = useI18n();
   const { scrollY, scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 26 });
   const [show, setShow] = useState(false);
@@ -19,7 +21,7 @@ export function BackToTop() {
         <motion.button
           type="button"
           onClick={() => scrollToId("inicio")}
-          aria-label="Volver al inicio"
+          aria-label={t.a11y.backToTop}
           initial={{ opacity: 0, y: 30, scale: 0.6 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.6 }}

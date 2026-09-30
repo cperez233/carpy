@@ -13,11 +13,8 @@ import { CarpyMark } from "../brand/CarpyMark";
 import { SectionLabel } from "../ui/SectionLabel";
 import { Fireflies } from "../ui/Fireflies";
 import { SplitWords } from "../ui/SplitWords";
-import { processSteps, promises } from "../../data/content";
+import { useI18n } from "../../i18n/context";
 import { ease, staggerChild, staggerParent } from "../../lib/motion";
-
-const statement =
-  "Desde la tienda de barrio hasta la empresa con varias sedes. Mismo trato, misma calma.";
 
 /** Una palabra que se aclara mientras el bloque cruza la pantalla. */
 function Word({ word, i, total, progress }: { word: string; i: number; total: number; progress: MotionValue<number> }) {
@@ -31,6 +28,7 @@ function Word({ word, i, total, progress }: { word: string; i: number; total: nu
 }
 
 function Statement() {
+  const statement = useI18n().t.process.statement;
   const ref = useRef<HTMLParagraphElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.5"] });
@@ -113,6 +111,7 @@ function River({ d, width, height, progress, className, axis }: RiverProps) {
 }
 
 export function Process() {
+  const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.75", "end 0.55"] });
@@ -130,20 +129,20 @@ export function Process() {
     >
       <Fireflies className="rounded-t-[40px] sm:rounded-t-[56px]" />
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-8">
-        <SectionLabel onDark>Para quién</SectionLabel>
+        <SectionLabel onDark>{t.process.forWhom}</SectionLabel>
         <div className="mt-5 sm:mt-6">
           <Statement />
         </div>
 
         <div className="mt-16 grid grid-cols-1 gap-4 sm:mt-28 sm:gap-6 lg:mt-36 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
-            <SectionLabel onDark>Cómo trabajamos</SectionLabel>
+            <SectionLabel onDark>{t.process.label}</SectionLabel>
             <h2 id="proceso-title" className="mt-5 font-display text-[clamp(2.3rem,5vw,4rem)] font-medium leading-[1] tracking-[-0.03em]">
-              <SplitWords text="Sin sorpresas en el camino." />
+              <SplitWords text={t.process.title} />
             </h2>
           </div>
           <p className="max-w-[28rem] text-[1rem] leading-[1.6] text-paper/70 sm:text-[1.06rem] lg:col-span-5">
-            Sabes qué recibes, cuándo y cuánto cuesta antes de empezar.
+            {t.process.intro}
           </p>
         </div>
 
@@ -168,17 +167,17 @@ export function Process() {
           />
 
           <ol className="grid grid-cols-1 gap-7 pl-14 lg:mt-8 lg:grid-cols-4 lg:gap-8 lg:pl-0">
-            {processSteps.map((s, i) => {
+            {t.process.steps.map((s, i) => {
               const on = reduce || i < reached;
               return (
-                <li key={s.title} className="relative">
+                <li key={i} className="relative">
                   <motion.span
                     animate={{ scale: on ? 1 : 0.6, backgroundColor: on ? "#d9772b" : "rgba(239,233,221,0.18)" }}
                     transition={{ type: "spring", stiffness: 400, damping: 24 }}
                     aria-hidden
                     className="mb-2 block h-3 w-3 rounded-full lg:mb-4"
                   />
-                  <p className="text-[0.9rem] font-semibold text-paper/60 sm:text-[0.95rem]">Paso {i + 1}</p>
+                  <p className="text-[0.9rem] font-semibold text-paper/60 sm:text-[0.95rem]">{t.process.step(i + 1)}</p>
                   <h3 className="mt-1 font-display text-[1.5rem] font-medium sm:text-[1.7rem] tracking-[-0.02em] text-paper">{s.title}</h3>
                   <p className="mt-1 max-w-[18rem] text-[0.97rem] leading-[1.5] text-paper/70 sm:mt-2 sm:text-[1rem] sm:leading-[1.55]">{s.body}</p>
                 </li>
@@ -188,7 +187,7 @@ export function Process() {
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-3 border-t border-paper/15 pt-8 sm:mt-24 sm:gap-8 sm:pt-10 lg:grid-cols-12">
-          <h3 className="font-display text-[1.5rem] font-medium tracking-[-0.02em] sm:text-[1.7rem] lg:col-span-4">Va por escrito</h3>
+          <h3 className="font-display text-[1.5rem] font-medium tracking-[-0.02em] sm:text-[1.7rem] lg:col-span-4">{t.process.promisesTitle}</h3>
           <motion.ul
             variants={staggerParent}
             initial="hidden"
@@ -196,8 +195,8 @@ export function Process() {
             viewport={{ once: true, margin: "-60px" }}
             className="grid grid-cols-1 gap-x-10 sm:grid-cols-2 lg:col-span-8"
           >
-            {promises.map((p) => (
-              <motion.li key={p} variants={staggerChild} className="flex gap-3 border-b border-paper/10 py-3 text-[0.98rem] leading-[1.5] text-paper/85 sm:py-4 sm:text-[1.03rem]">
+            {t.process.promises.map((p, i) => (
+              <motion.li key={i} variants={staggerChild} className="flex gap-3 border-b border-paper/10 py-3 text-[0.98rem] leading-[1.5] text-paper/85 sm:py-4 sm:text-[1.03rem]">
                 <motion.span
                   aria-hidden
                   initial={{ scaleX: 0 }}
