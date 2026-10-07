@@ -125,9 +125,14 @@ export function Footer() {
           <span className="relative font-display text-[27vw] font-medium leading-[0.78] tracking-[-0.05em] text-paper/[0.08]">
             carpy
             {/* El capibara descansa sobre las letras. */}
-            <span className="absolute bottom-[56%] left-[7%] w-[11vw]">
-              <CarpyMark className="carpy-alive h-auto w-full text-paper/80" cutout="var(--color-river)" />
+            <span className="anim-nudge absolute bottom-[56%] left-[7%] w-[11vw]">
+              <CarpyMark className="carpy-alive carpy-roller h-auto w-full text-paper/80" cutout="var(--color-river)" />
             </span>
+            {/* De vez en cuando la mandarina se le cae y rueda por las letras. */}
+            <svg viewBox="23 -8.8 14 16.8" className="anim-fruit-roll absolute top-0 left-0 h-[0.107em] w-[0.0891em] overflow-visible">
+              <circle cx="30" cy="1.6" r="6.4" fill="var(--color-mandarina)" />
+              <path d="M30 -4.6c1.6-3 4.8-3.6 6.6-2.6-1.6 1.8-4 2.8-6.6 2.6z" fill="var(--color-reed)" />
+            </svg>
           </span>
         </motion.div>
       </div>

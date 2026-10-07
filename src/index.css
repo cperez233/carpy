@@ -265,3 +265,54 @@ body::before {
 .anim-wave {
   animation: anim-wave var(--dur, 20s) linear infinite;
 }
+
+/* Mandarina que rueda por la palabra del footer. Las medidas van en em del
+   texto (27vw), asi siguen las letras a cualquier ancho. Ciclo de 14s:
+   el capibara la empuja, rueda por "carpy", cae por la "y" y le sale otra. */
+@keyframes anim-fruit-roll {
+  0%, 55% { transform: translate(0.3312em, 0.0733em) rotate(0); opacity: 0; animation-timing-function: ease-out; }
+  55.01% { transform: translate(0.3312em, 0.0733em) rotate(0); opacity: 1; animation-timing-function: ease-out; }
+  57% { transform: translate(0.4233em, 0.0582em) rotate(90deg); animation-timing-function: ease-in; }
+  59.5% { transform: translate(0.5291em, 0.1587em) rotate(200deg); animation-timing-function: ease-in; }
+  61% { transform: translate(0.5952em, 0.2574em) rotate(300deg); animation-timing-function: ease-out; }
+  62% { transform: translate(0.6349em, 0.2328em) rotate(350deg); animation-timing-function: ease-in; }
+  63% { transform: translate(0.6746em, 0.2574em) rotate(400deg); animation-timing-function: linear; }
+  85% { transform: translate(1.9709em, 0.2672em) rotate(2222deg); animation-timing-function: ease-out; }
+  86.5% { transform: translate(2.0159em, 0.2804em) rotate(2280deg); animation-timing-function: ease-in; }
+  92% { transform: translate(2.1164em, 0.8995em) rotate(2400deg); opacity: 1; }
+  92.01%, 100% { transform: translate(2.1164em, 0.8995em) rotate(2400deg); opacity: 0; }
+}
+.anim-fruit-roll {
+  margin: -0.0662em 0 0 -0.0446em;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 61.9%;
+  animation: anim-fruit-roll 14s infinite;
+}
+/* La mandarina de la cabeza: se mece, desaparece al rodar y brota de nuevo. */
+@keyframes carpy-fruit-cycle {
+  0%, 50%, 55% { rotate: 0deg; scale: 1; opacity: 1; }
+  12%, 37% { rotate: -3deg; }
+  25% { rotate: 3deg; }
+  55.01%, 92% { opacity: 0; scale: 0; }
+  93% { opacity: 1; scale: 0; }
+  96% { scale: 1.2; }
+  98%, 100% { scale: 1; rotate: 0deg; }
+}
+.carpy-alive.carpy-roller .carpy-fruit {
+  transform-origin: 50% 100%;
+  animation: carpy-fruit-cycle 14s ease-in-out infinite;
+}
+/* El capibara se echa atras y empuja la mandarina hacia adelante. */
+@keyframes anim-nudge {
+  0%, 49%, 59%, 100% { transform: rotate(0); }
+  53% { transform: rotate(-5deg); }
+  55.5% { transform: rotate(4deg); }
+}
+.anim-nudge {
+  transform-origin: 30% 100%;
+  animation: anim-nudge 14s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .carpy-alive.carpy-roller .carpy-fruit { animation: none; }
+}
