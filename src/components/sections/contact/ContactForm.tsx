@@ -9,7 +9,7 @@ import { ease, layoutSpring } from "../../../lib/motion";
 import { track } from "../../../lib/track";
 import { REQUEST_EVENT } from "../services/Services";
 import { useI18n } from "../../../i18n/context";
-import { dicts, type Dict } from "../../../i18n/locales";
+import { dicts, privacyPath, type Dict } from "../../../i18n/locales";
 
 interface Fields {
   name: string;
@@ -306,7 +306,13 @@ export function ContactForm() {
                   {t.errorB}
                 </p>
               )}
-              <p className="mt-5 text-[0.9rem] text-ink-3">{t.privacy}</p>
+              <p className="mt-5 text-[0.9rem] text-ink-3">
+                {t.privacy}{" "}
+                <a href={privacyPath(locale)} target="_blank" rel="noopener" className="underline underline-offset-4 hover:text-ink">
+                  {t.privacyLink}
+                </a>
+                .
+              </p>
             </motion.div>
           )}
         </AnimatePresence>

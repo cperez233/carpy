@@ -123,10 +123,19 @@ export interface Dict {
     errorLink: string;
     errorB: string;
     privacy: string;
+    privacyLink: string;
     previewTitle: string;
     now: string;
     trap: string;
     requestTypes: RequestType[];
+  };
+  legal: {
+    privacyNav: string;
+    title: string;
+    description: string;
+    updated: string;
+    back: string;
+    sections: { title: string; body: string[] }[];
   };
   email: { subject: string; app: string; copy: string; copied: string };
   footer: { blurb: string; madeBy: string; inPerson: string; cities: { city: string; who: string }[] };

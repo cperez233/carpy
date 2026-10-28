@@ -330,7 +330,8 @@ export const en: Dict = {
     errorA: "We couldn't send the form.",
     errorLink: "Send it from your email",
     errorB: "and we'll reply all the same.",
-    privacy: "We only use your details to reply to this message.",
+    privacy: "By sending, you authorize carpy to use your details only to reply to this message. Your rights are in our",
+    privacyLink: "Privacy policy",
     previewTitle: "How your message reaches us",
     now: "now ✓✓",
     trap: "Do not fill",
@@ -341,6 +342,66 @@ export const en: Dict = {
       { id: "auditoria", label: "An audit", opener: "I'd like an audit of my software or my processes." },
       { id: "soporte", label: "Support", opener: "I need support or technical advice." },
       { id: "otro", label: "Something else", opener: "I have a question." },
+    ],
+  },
+  legal: {
+    privacyNav: "Privacy policy",
+    title: "Privacy policy",
+    description: "How carpy handles the personal data it receives through the contact form, email and WhatsApp.",
+    updated: "Effective October 28, 2026",
+    back: "Back to carpy",
+    sections: [
+      {
+        title: "Who is responsible",
+        body: ["carpy, in Bucaramanga, Santander, Colombia. Email: {email}."],
+      },
+      {
+        title: "What we collect and why",
+        body: [
+          "Through the form we receive your name, your email, the type of request, your message and the language of the page; the company is optional. We use them only to reply to your request and, if there is a proposal, to prepare the service.",
+          "This site is for businesses and adults. We do not ask for sensitive data or data about minors; please do not include them in your message.",
+        ],
+      },
+      {
+        title: "How we collect it",
+        body: [
+          "The form reaches our inbox through Web3Forms. If you prefer WhatsApp or your email app, the message leaves from your device and arrives directly.",
+        ],
+      },
+      {
+        title: "Who we share it with",
+        body: [
+          "We do not sell your data. It passes through the providers that make contact possible: Web3Forms (delivers the form), Google (carpy's email), Meta (WhatsApp, if you choose it) and Vercel (hosts the page and receives your IP address and technical visit data). Some may be outside Colombia.",
+        ],
+      },
+      {
+        title: "Cookies and storage",
+        body: [
+          "We use no cookies and no analytics tools. If you pick a language with the selector, your browser stores that preference on your device and it never leaves it.",
+        ],
+      },
+      {
+        title: "Your rights",
+        body: [
+          "You can access, update, correct and delete your data, withdraw your consent, ask for proof of it and learn how we use it. You can also file a complaint with Colombia's Superintendence of Industry and Commerce (SIC).",
+        ],
+      },
+      {
+        title: "How to exercise them",
+        body: [
+          "Write to {email}. We answer queries within 10 business days and complaints within 15 business days.",
+        ],
+      },
+      {
+        title: "Security and retention",
+        body: [
+          "We apply reasonable measures to protect your data. We keep it as long as needed to handle your request, the business relationship and legal obligations, and delete it afterwards.",
+        ],
+      },
+      {
+        title: "Changes",
+        body: ["If this policy changes, we will publish the new version here with its date."],
+      },
     ],
   },
   email: { subject: "Contact from carpy.tech", app: "Email app", copy: "Copy email", copied: "Copied ✓" },

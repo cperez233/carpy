@@ -6,7 +6,7 @@ import { EmailLink } from "../ui/EmailLink";
 import { handleAnchorClick } from "../../lib/scroll";
 import { autor, firmaInvisible } from "../../lib/firma";
 import { useI18n } from "../../i18n/context";
-import { dicts, localePath, locales } from "../../i18n/locales";
+import { dicts, localePath, locales, privacyPath } from "../../i18n/locales";
 
 const linkCls = "inline-flex min-h-10 items-center text-[1rem] text-paper/65 transition-colors hover:text-paper";
 
@@ -84,6 +84,9 @@ export function Footer() {
         <div className="mt-8 flex flex-wrap sm:mt-14 items-center justify-between gap-3 border-t border-paper/10 py-6 text-[0.9rem] text-paper/50">
           <p className="flex flex-wrap items-center gap-x-4">
             <span>© 2026 {site.name}.</span>
+            <a href={privacyPath(locale)} className="inline-flex min-h-10 items-center text-paper/60 transition-colors hover:text-paper">
+              {t.legal.privacyNav}
+            </a>
             {/* El otro idioma, como enlace real para buscadores. */}
             {locales
               .filter((l) => l !== locale)

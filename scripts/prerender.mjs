@@ -4,6 +4,7 @@
  * previews sociales lo lean sin ejecutar JavaScript. Tambien genera
  * robots.txt, sitemap.xml, llms.txt y 404.html desde los mismos datos.
  */
+import { createHash } from "node:crypto";
 import { readFile, writeFile, rm } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
@@ -11,7 +12,7 @@ import path from "node:path";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 const ssrEntry = pathToFileURL(path.join(root, "dist-ssr", "entry-server.js")).href;
-const { render, buildJsonLd, buildHead, site, activeTeam, dicts, locales, localeUrl } = await import(ssrEntry);
+const { render, buildJsonLd, buildHead, site, activeTeam, dicts, locales, localeUrl, privacyPath } = await import(ssrEntry);
 
 // Una pagina por idioma: dist/index.html (es, en `/`) y dist/en.html (en `/en`).
 const template = await readFile(path.join(dist, "index.html"), "utf8");
@@ -117,5 +118,55 @@ ${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ""}
 `,
 );
 
+// Politica de privacidad: una pagina estatica por idioma (/privacidad y /privacy), con la misma hoja de estilos.
+const escHtml = (v) => v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+for (const locale of locales) {
+  const t = dicts[locale];
+  const l = t.legal;
+  const withEmail = (v) => escHtml(v).replaceAll("{email}", `<a href="mailto:${site.email}" class="underline underline-offset-4">${site.email}</a>`);
+  const home = locale === "es" ? "/" : "/en";
+  const url = `${site.url}${privacyPath(locale)}`;
+  const body = l.sections
+    .map(
+      (sec) => `<section class="mt-9">
+<h2 class="font-display text-[1.45rem] font-medium tracking-[-0.02em] text-ink">${escHtml(sec.title)}</h2>
+${sec.body.map((p) => `<p class="mt-3 text-[1.06rem] leading-[1.65] text-ink-3">${withEmail(p)}</p>`).join("\n")}
+</section>`,
+    )
+    .join("\n");
+  await writeFile(
+    path.join(dist, `${privacyPath(locale).slice(1)}.html`),
+    `<!doctype html>
+<html lang="${t.meta.htmlLang}">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>${escHtml(l.title)} | carpy</title>
+<meta name="description" content="${escHtml(l.description)}" />
+<link rel="canonical" href="${url}" />
+${locales.map((x) => `<link rel="alternate" hreflang="${x}" href="${site.url}${privacyPath(x)}" />`).join("\n")}
+<meta name="theme-color" content="#efe9dd" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ""}
+</head>
+<body>
+<main class="mx-auto max-w-[40rem] px-6 py-16">
+<a href="${home}" class="inline-flex min-h-12 items-center font-semibold text-ink underline decoration-mandarina decoration-2 underline-offset-4">${escHtml(l.back)}</a>
+<h1 class="mt-6 font-display text-[clamp(2.2rem,5vw,3.6rem)] font-medium leading-[1] tracking-[-0.03em] text-ink">${escHtml(l.title)}</h1>
+<p class="mt-4 text-[0.95rem] text-ink-3">${escHtml(l.updated)}</p>
+${body}
+</main>
+</body>
+</html>
+`,
+  );
+}
+
+// La CSP de vercel.json autoriza por hash el script inline que detecta el idioma: si el script cambia, el build avisa.
+const inline = (await readFile(path.join(dist, "index.html"), "utf8")).match(/<script>([^<]+)<\/script>/)?.[1];
+const hash = `'sha256-${createHash("sha256").update(inline ?? "").digest("base64")}'`;
+const vercel = await readFile(path.join(root, "vercel.json"), "utf8");
+if (!inline || !vercel.includes(hash)) throw new Error(`vercel.json: el hash de la CSP no coincide con el script inline. Usa ${hash} en script-src.`);
+
 await rm(path.join(root, "dist-ssr"), { recursive: true, force: true });
-console.log("Prerender listo: index.html, en.html, 404.html, robots.txt, sitemap.xml, llms.txt");
+console.log("Prerender listo: index.html, en.html, privacidad.html, privacy.html, 404.html, robots.txt, sitemap.xml, llms.txt");

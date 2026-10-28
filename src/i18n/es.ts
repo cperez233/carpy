@@ -334,7 +334,8 @@ export const es: Dict = {
     errorA: "No pudimos enviar el formulario.",
     errorLink: "Envíalo desde tu correo",
     errorB: "y te respondemos igual.",
-    privacy: "Usamos tus datos solo para responder este mensaje.",
+    privacy: "Al enviar, autorizas a carpy a usar tus datos solo para responder este mensaje. Tus derechos están en la",
+    privacyLink: "Política de privacidad",
     previewTitle: "Así nos llega tu mensaje",
     now: "ahora ✓✓",
     trap: "No llenar",
@@ -345,6 +346,66 @@ export const es: Dict = {
       { id: "auditoria", label: "Una auditoría", opener: "Quiero una auditoría de mi software o mis procesos." },
       { id: "soporte", label: "Soporte", opener: "Necesito soporte o asesoría técnica." },
       { id: "otro", label: "Otra cosa", opener: "Tengo una consulta." },
+    ],
+  },
+  legal: {
+    privacyNav: "Política de privacidad",
+    title: "Política de privacidad",
+    description: "Cómo carpy trata los datos personales que recibe por el formulario, el correo y WhatsApp (Ley 1581 de 2012).",
+    updated: "Vigente desde el 28 de octubre de 2026",
+    back: "Volver al inicio de carpy",
+    sections: [
+      {
+        title: "Quién es el responsable",
+        body: ["carpy, en Bucaramanga, Santander, Colombia. Correo: {email}."],
+      },
+      {
+        title: "Qué datos recogemos y para qué",
+        body: [
+          "Con el formulario recibimos tu nombre, tu correo, el tipo de solicitud, tu mensaje y el idioma de la página; la empresa es opcional. Los usamos solo para responder tu solicitud y, si hay una propuesta, para preparar el servicio.",
+          "Este sitio es para empresas y adultos. No pedimos datos sensibles ni de menores de edad; no los incluyas en el mensaje.",
+        ],
+      },
+      {
+        title: "Cómo los recogemos",
+        body: [
+          "El formulario se envía a nuestro correo a través de Web3Forms. Si prefieres WhatsApp o tu app de correo, el mensaje sale desde tu dispositivo y nos llega directo.",
+        ],
+      },
+      {
+        title: "Con quién los compartimos",
+        body: [
+          "No vendemos tus datos. Pasan por los proveedores que hacen posible el contacto: Web3Forms (entrega el formulario), Google (el correo de carpy), Meta (WhatsApp, si lo eliges) y Vercel (alojamiento de la página, que recibe tu dirección IP y datos técnicos de la visita). Algunos pueden estar fuera de Colombia.",
+        ],
+      },
+      {
+        title: "Cookies y almacenamiento",
+        body: [
+          "No usamos cookies ni herramientas de analítica. Si eliges un idioma con el selector, tu navegador guarda esa preferencia en tu dispositivo y no sale de él.",
+        ],
+      },
+      {
+        title: "Tus derechos",
+        body: [
+          "Puedes conocer, actualizar, rectificar y suprimir tus datos, revocar la autorización, pedir prueba de ella y saber cómo los usamos. También puedes presentar una queja ante la Superintendencia de Industria y Comercio.",
+        ],
+      },
+      {
+        title: "Cómo ejercerlos",
+        body: [
+          "Escríbenos a {email}. Respondemos las consultas en máximo 10 días hábiles y los reclamos en máximo 15 días hábiles.",
+        ],
+      },
+      {
+        title: "Seguridad y conservación",
+        body: [
+          "Aplicamos medidas razonables para proteger tus datos. Los conservamos mientras sean necesarios para atender tu solicitud, la relación comercial y las obligaciones legales; después los eliminamos.",
+        ],
+      },
+      {
+        title: "Cambios",
+        body: ["Si esta política cambia, publicaremos aquí la nueva versión con su fecha."],
+      },
     ],
   },
   email: { subject: "Contacto desde carpy.tech", app: "App de correo", copy: "Copiar correo", copied: "Copiado ✓" },

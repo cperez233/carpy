@@ -21,6 +21,10 @@ export function localeUrl(locale: Locale): string {
   return locale === "en" ? `${site.url}/en` : `${site.url}/`;
 }
 
+export function privacyPath(locale: Locale): string {
+  return locale === "en" ? "/privacy" : "/privacidad";
+}
+
 export function localeFromPath(pathname: string): Locale {
   return /^\/en(\/|$)/.test(pathname) ? "en" : "es";
 }
