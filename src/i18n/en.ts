@@ -235,7 +235,7 @@ export const en: Dict = {
   },
   process: {
     forWhom: "Who it's for",
-    statement: "From the corner shop to the company with several branches. Same care, same calm.",
+    statement: "From the corner shop to the company with several branches, we bring the same care and the same calm.",
     label: "How we work",
     title: "No surprises along the way.",
     intro: "You know what you'll get, when, and what it costs before we start.",
@@ -352,7 +352,7 @@ export const en: Dict = {
       { city: "Bucaramanga", who: "Cris and Jorge" },
       { city: "Valledupar", who: "Javier" },
     ],
-    madeBy: "Calmly made by",
+    madeBy: "Made calmly by",
   },
   jsonLd: {
     orgDescription:

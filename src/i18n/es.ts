@@ -238,7 +238,7 @@ export const es: Dict = {
   },
   process: {
     forWhom: "Para quién",
-    statement: "Desde la tienda de barrio hasta la empresa con varias sedes. Mismo trato, misma calma.",
+    statement: "Desde la tienda de barrio hasta la empresa con varias sedes, con el mismo trato y la misma calma.",
     label: "Cómo trabajamos",
     title: "Sin sorpresas en el camino.",
     intro: "Sabes qué recibes, cuándo y cuánto cuesta antes de empezar.",
