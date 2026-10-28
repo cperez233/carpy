@@ -309,6 +309,7 @@ export const en: Dict = {
     errName: "Please enter your name.",
     errEmail: "Check your email: it looks incomplete.",
     errMessage: "Tell us a bit more (at least 15 characters).",
+    errCaptcha: "Tick the box to confirm you are not a robot.",
     hello: (name, org) => `Hi, I'm ${name}${org ? ` from ${org}` : ""}.`,
     yourName: "(your name)",
     yourMessage: "(your message)",
@@ -371,13 +372,13 @@ export const en: Dict = {
       {
         title: "Who we share it with",
         body: [
-          "We do not sell your data. It passes through the providers that make contact possible: Web3Forms (delivers the form), Google (carpy's email), Meta (WhatsApp, if you choose it) and Vercel (hosts the page and receives your IP address and technical visit data). Some may be outside Colombia.",
+          "We do not sell your data. It passes through the providers that make contact possible: Web3Forms (delivers the form), hCaptcha (the form's anti-spam check), Google (carpy's email), Meta (WhatsApp, if you choose it) and Vercel (hosts the page and receives your IP address and technical visit data). Some may be outside Colombia.",
         ],
       },
       {
         title: "Cookies and storage",
         body: [
-          "We use no cookies and no analytics tools. If you pick a language with the selector, your browser stores that preference on your device and it never leaves it.",
+          "We set no cookies of our own and use no analytics tools. hCaptcha, the form's anti-spam check, loads only when you start typing in the form and may store technical data in your browser to tell people from robots. If you pick a language with the selector, your browser stores that preference on your device and it never leaves it.",
         ],
       },
       {

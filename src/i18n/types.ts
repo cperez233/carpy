@@ -100,6 +100,7 @@ export interface Dict {
     errName: string;
     errEmail: string;
     errMessage: string;
+    errCaptcha: string;
     /** Primera frase del mensaje: "Hola, soy Ana de Tienda X." */
     hello: (name: string, org: string) => string;
     yourName: string;

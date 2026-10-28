@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { CarpyMark } from "../../brand/CarpyMark";
@@ -6,6 +6,7 @@ import type { RequestType } from "../../../data/content";
 import { composeLinks, site, whatsappHref } from "../../../data/site";
 import { cn } from "../../../lib/cn";
 import { ease, layoutSpring } from "../../../lib/motion";
+import { loadHcaptcha } from "../../../lib/hcaptcha";
 import { track } from "../../../lib/track";
 import { REQUEST_EVENT } from "../services/Services";
 import { useI18n } from "../../../i18n/context";
@@ -19,7 +20,7 @@ interface Fields {
   message: string;
 }
 type Errors = Partial<Record<keyof Fields, string>>;
-type Status = "idle" | "sending" | "sent" | "mail" | "error";
+type Status = "idle" | "sending" | "sent" | "mail" | "error" | "captcha";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -59,6 +60,13 @@ export function ContactForm() {
   const errors = validate(f, t);
   const { subject, body } = compose(f, t);
   const [copied, setCopied] = useState(false);
+  // hCaptcha: se carga al empezar a escribir y se vuelve a dibujar si el formulario se remonta.
+  const captchaEl = useRef<HTMLDivElement>(null);
+  const captchaId = useRef<string | null>(null);
+  const [wantCaptcha, setWantCaptcha] = useState(false);
+  const [captchaState, setCaptchaState] = useState<"idle" | "ready" | "failed">("idle");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const useCaptcha = Boolean(site.web3formsKey && site.hcaptchaSiteKey);
 
   async function copyMessage() {
     try {
@@ -79,6 +87,30 @@ export function ContactForm() {
     return () => window.removeEventListener(REQUEST_EVENT, on);
   }, []);
 
+  const done = status === "sent" || status === "mail";
+
+  useEffect(() => {
+    if (!useCaptcha || !wantCaptcha || done || !captchaEl.current) return;
+    const el = captchaEl.current;
+    let cancelled = false;
+    loadHcaptcha(locale)
+      .then((hc) => {
+        if (cancelled || el.childElementCount > 0) return;
+        captchaId.current = hc.render(el, {
+          sitekey: site.hcaptchaSiteKey,
+          callback: (token: string) => setCaptchaToken(token),
+          "expired-callback": () => setCaptchaToken(""),
+          "error-callback": () => setCaptchaToken(""),
+        });
+        setCaptchaToken("");
+        setCaptchaState("ready");
+      })
+      .catch(() => !cancelled && setCaptchaState("failed"));
+    return () => {
+      cancelled = true;
+    };
+  }, [useCaptcha, wantCaptcha, done, locale]);
+
   const set = <K extends keyof Fields>(k: K) => (v: Fields[K]) => setF((x) => ({ ...x, [k]: v }));
   const err = (k: keyof Fields) => (touched[k] ? errors[k] : undefined);
   const blur = (k: keyof Fields) => () => setTouched((t) => ({ ...t, [k]: true }));
@@ -90,11 +122,18 @@ export function ContactForm() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!touchAll() || trap) return;
-    track("contacto_enviar", { type: f.type, channel: site.web3formsKey ? "form" : "email" });
-    if (!site.web3formsKey) {
+    // Sin captcha disponible (bloqueado o sin red) se ofrece el correo directo.
+    if (!site.web3formsKey || captchaState === "failed") {
+      track("contacto_enviar", { type: f.type, channel: "email" });
       setStatus("mail");
       return;
     }
+    if (useCaptcha && !captchaToken) {
+      setWantCaptcha(true);
+      setStatus("captcha");
+      return;
+    }
+    track("contacto_enviar", { type: f.type, channel: "form" });
     setStatus("sending");
     try {
       // Web3Forms lista cada campo en el correo; `email` queda como reply-to.
@@ -112,6 +151,7 @@ export function ContactForm() {
           Tipo: dicts.es.form.requestTypes.find((r) => r.id === f.type)!.label,
           Idioma: dict.langName,
           Mensaje: f.message.trim(),
+          ...(useCaptcha ? { "h-captcha-response": captchaToken } : {}),
         }),
       });
       const data = (await res.json().catch(() => null)) as { success?: boolean } | null;
@@ -119,6 +159,9 @@ export function ContactForm() {
     } catch {
       setStatus("error");
     }
+    // El token solo vale una vez.
+    if (captchaId.current) window.hcaptcha?.reset(captchaId.current);
+    setCaptchaToken("");
   }
 
   function onWhatsapp() {
@@ -129,11 +172,9 @@ export function ContactForm() {
     window.open(href, "_blank", "noopener");
   }
 
-  const done = status === "sent" || status === "mail";
-
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
-      <form noValidate onSubmit={onSubmit} className="lg:col-span-7">
+      <form noValidate onSubmit={onSubmit} onFocus={() => useCaptcha && setWantCaptcha(true)} className="lg:col-span-7">
         <AnimatePresence mode="wait" initial={false}>
           {done ? (
             <motion.div
@@ -276,6 +317,17 @@ export function ContactForm() {
                   <input tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
                 </label>
               </div>
+
+              {useCaptcha && (
+                <div className="mt-6">
+                  <div ref={captchaEl} />
+                  {status === "captcha" && !captchaToken && (
+                    <p role="alert" className="mt-2 text-[0.95rem] font-semibold text-fail">
+                      {t.errCaptcha}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                 {whatsappHref("") && (

@@ -313,6 +313,7 @@ export const es: Dict = {
     errName: "Escribe tu nombre.",
     errEmail: "Revisa el correo: parece incompleto.",
     errMessage: "Cuéntanos un poco más (mínimo 15 caracteres).",
+    errCaptcha: "Marca la casilla para confirmar que no eres un robot.",
     hello: (name, org) => `Hola, soy ${name}${org ? ` de ${org}` : ""}.`,
     yourName: "(tu nombre)",
     yourMessage: "(tu mensaje)",
@@ -375,13 +376,13 @@ export const es: Dict = {
       {
         title: "Con quién los compartimos",
         body: [
-          "No vendemos tus datos. Pasan por los proveedores que hacen posible el contacto: Web3Forms (entrega el formulario), Google (el correo de carpy), Meta (WhatsApp, si lo eliges) y Vercel (alojamiento de la página, que recibe tu dirección IP y datos técnicos de la visita). Algunos pueden estar fuera de Colombia.",
+          "No vendemos tus datos. Pasan por los proveedores que hacen posible el contacto: Web3Forms (entrega el formulario), hCaptcha (antispam del formulario), Google (el correo de carpy), Meta (WhatsApp, si lo eliges) y Vercel (alojamiento de la página, que recibe tu dirección IP y datos técnicos de la visita). Algunos pueden estar fuera de Colombia.",
         ],
       },
       {
         title: "Cookies y almacenamiento",
         body: [
-          "No usamos cookies ni herramientas de analítica. Si eliges un idioma con el selector, tu navegador guarda esa preferencia en tu dispositivo y no sale de él.",
+          "No usamos cookies propias ni herramientas de analítica. hCaptcha, el antispam del formulario, solo se carga cuando empiezas a escribir en él y puede guardar datos técnicos en tu navegador para distinguir personas de robots. Si eliges un idioma con el selector, tu navegador guarda esa preferencia en tu dispositivo y no sale de él.",
         ],
       },
       {

@@ -36,6 +36,12 @@ export interface SiteConfig {
    * Gmail, Outlook o la app de correo con el mensaje ya escrito.
    */
   web3formsKey: string | null;
+  /**
+   * Sitekey publica de hCaptcha para el formulario. Es la que Web3Forms da a
+   * los planes gratis (docs.web3forms.com > hCaptcha). Requiere activar
+   * hCaptcha como "Block Spam" en el panel de Web3Forms.
+   */
+  hcaptchaSiteKey: string | null;
   /** Perfiles de la empresa (LinkedIn, GitHub...). Vacio hasta que existan. */
   sameAs: string[];
   /** Fecha de la ultima revision del contenido (sitemap y JSON-LD). */
@@ -53,6 +59,7 @@ export const site: SiteConfig = {
   whatsapp: "+573334337931",
   bookingUrl: null,
   web3formsKey: "94c09bfb-ccd1-4062-a520-e03cbae28e83",
+  hcaptchaSiteKey: "50b2fe65-b00b-4b9e-ad62-3ba471098be2",
   sameAs: [],
   lastModified: "2026-09-26",
 };
